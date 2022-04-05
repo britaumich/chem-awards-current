@@ -1,27 +1,19 @@
 <?php
 session_start();
+$_SESSION['login'] = false;
 require 'vendor/autoload.php';
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/basicLib.php');
 require_once('ldap.inc');
 
 $oidc = new Jumbojett\OpenIDConnectClient($issuer, $cid, $secret);
 
-$oidc->authenticate();
-$oidc->requestUserInfo('sub');
-
-$session = array();
-$verifiedclaims = $oidc->getVerifiedClaims();
-foreach ($verifiedclaims as $key => $value) {
-    if(is_array($value)){
-            $v = implode(', ', $value);
-    }else{
-            $v = $value;
-    }
-    $session[$key] = $v;
+$auth = $oidc->authenticate();
+if ($auth) {
+  $_SESSION['login'] = true;
+  $_SESSION['current_user'] = $oidc->requestUserInfo('sub');
+  $current_user = $_SESSION['current_user'];
 }
-
-$_SESSION['attributes'] = $session;
-$current_user = $_SESSION['attributes']['sub'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +44,6 @@ $current_user = $_SESSION['attributes']['sub'];
     </div>
 
 <?php
-echo "start";
 echo '<script type="text/JavaScript"> 
 console.log("hell!!  ready");
 $("#spinner").show();
@@ -60,14 +51,7 @@ $("#spinner").show();
 
 $groups = userGroups($current_user);
 $_SESSION['user_membership'] = $groups;
-echo " - end ";
-echo '<script type="text/JavaScript"> 
-console.log("hell!!  ready");
-$("#spinner").hide();
-</script>';
-//var_export($_SESSION['user_membership']);
-echo "<script> location.href='index.php'; </script>";
-        exit;
+forceRedirect('index.php');
 ?>
   </body>
 </html>

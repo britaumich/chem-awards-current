@@ -18,24 +18,26 @@ session_start();
 <div align="center"><br><br><h1>Chemistry Awards<br></h1><br>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 <?php
-session_start();
 include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-//echo"<br>user: ";
-//echo $current_user;
-//var_export($_SESSION['user_membership']);
-if (is_admin($current_user)) {
+if (admin_access()) {
 ?>
 <form action="admin/allawards.php">
     <input type="submit" value="Admin Site" />
 </form>
 <?php
-}
+} 
+if (non_admin_access()) {
 ?>
 <form action="faculty/index.php">
     <input type="submit" value="Faculty Site" />
 </form>
+<?php
+} else {
+   echo ("You are not authorized to run this action");
+}
+?>
 </div>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 

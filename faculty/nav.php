@@ -1,7 +1,9 @@
 <?php
-//function navbar()
+session_start();
 require_once('../library/HTMLPurifier.auto.php');
+require_once('../access.php');
 $purifier = new HTMLPurifier();
+if (non_admin_access()) {
 ?>
 <div class="bodypad">
 
@@ -15,4 +17,9 @@ $purifier = new HTMLPurifier();
 <a class="navlink" href="allawards.php">All Awards</a>
 </div>
 <br>
-
+<?php
+} else {
+   echo ("You are not authorized to run this action");
+   exit;
+}
+?>

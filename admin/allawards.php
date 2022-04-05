@@ -30,7 +30,7 @@ if ($sort !== '') {
 $start = "none";
 $end = "none";
 
-if (isset($_REQUEST[submit])) {
+if (isset($_REQUEST['submit'])) {
 
      $type = check_input($conn, $_REQUEST['type']);
 //     $due_month = check_input($conn, $_REQUEST['due_month']);
@@ -45,7 +45,7 @@ if (isset($_REQUEST[submit])) {
      $keyword_search = check_input($conn, $_REQUEST['keyword_search']);
 
     $cluster_check = array();
-    $cluster_check = purica_array($conn, $_REQUEST[cluster_check]);
+    $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
     if (!empty($cluster_check)) {
         $clusterlist = implode(", ", $cluster_check);
             $from = " FROM (SELECT `id`, `type`, `Award_Name`, Due_Month, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, who_is_eligible, `comments` FROM  `awards_descr` JOIN award_cluster ON awards_descr.id = award_cluster.award_id WHERE award_cluster.cluster_id IN (" . $clusterlist . ") GROUP BY awards_descr.id) a ";
@@ -139,16 +139,16 @@ $clustersids = array();
     $result = mysqli_query($conn, $sql) or die("Query failed :".mysqli_error($conn));
 if (mysqli_num_rows($result) != 0) {
      while ( $clusters = mysqli_fetch_array($result, MYSQLI_BOTH) ) {
-           $cname = $clusters[name];
+           $cname = $clusters['name'];
            echo "<input type='checkbox' name='cluster_check[";
-           echo $clusters[id];
+           echo $clusters['id'];
            echo "]' ";
            echo "value='$clusters[id]'";
-           if (in_array($clusters[id], $clustersids)) {echo " checked"; }
+           if (in_array($clusters['id'], $clustersids)) {echo " checked"; }
                 echo ">$cname";
 
 //           echo ">$cname";
-           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters[id] . "'>";
+           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters['id'] . "'>";
      }
 }
 
@@ -219,7 +219,7 @@ while ( $idata = mysqli_fetch_array($result, MYSQLI_BOTH) )
 {
 	
 // get a list of ids from $sqlsearch
-     $search_id_list[] = $idata[id];
+     $search_id_list[] = $idata['id'];
 }
  $result = mysqli_query($conn, $sqlsearch) or die("sqlsearch query failedb:".mysqli_error($conn));
 

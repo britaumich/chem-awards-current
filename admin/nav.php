@@ -1,8 +1,8 @@
-<?
+<?php
 require_once('../access.php');
-include('access_list.inc');
 require_once('../library/HTMLPurifier.auto.php');
 $purifier = new HTMLPurifier();
+if (admin_access()) {
 ?>
 <div class="bodypad">
 <div align="center"><br>
@@ -21,4 +21,9 @@ $purifier = new HTMLPurifier();
 <a class="navlink" href="add_nominations.php">Award Status Update</a>
 </div>
 <br>
-<?
+<?php
+} else {
+   echo ("You are not authorized to run this action");
+   exit;
+}
+?>
