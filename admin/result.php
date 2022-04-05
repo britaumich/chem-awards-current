@@ -1,4 +1,5 @@
-<?php
+<?php      
+session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $award_id = $purifier->purify($_REQUEST['award_id']);
 $year = $purifier->purify($_REQUEST['year']);

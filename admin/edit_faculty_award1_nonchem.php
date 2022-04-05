@@ -1,4 +1,5 @@
-<?php
+<?php      
+session_start();
 function renderForm($conn, $dataid, $name, $year, $statusid, $comment, $error)
  {
  ?>

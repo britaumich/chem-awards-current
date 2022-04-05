@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('../library/HTMLPurifier.auto.php');
 $purifier = new HTMLPurifier();
