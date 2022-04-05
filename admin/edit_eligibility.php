@@ -11,8 +11,8 @@
 </head>
 <body>
 <?php 
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 ?>
 <div align="center"><h2>Eligibility List<br></h3>
 

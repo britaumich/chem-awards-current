@@ -1,6 +1,6 @@
 <?
-//function navbar()
-//{
+require_once('../access.php');
+include('access_list.inc');
 require_once('../library/HTMLPurifier.auto.php');
 $purifier = new HTMLPurifier();
 ?>
@@ -22,5 +22,3 @@ $purifier = new HTMLPurifier();
 </div>
 <br>
 <?
-//}
-

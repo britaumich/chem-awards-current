@@ -1,6 +1,6 @@
-.htaccess*
-admin/.htacess*
-faculty/.htaccess*
+.access_list.inc*
+admin/.access_list.inc*
+faculty/.access_list.inc*
 test*
 admin/error_log
 faculty/error_log

@@ -56,8 +56,8 @@ echo "</select>";
  <?php
  }  // function
 ob_start();
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $keyword_search = $purifier->purify($_REQUEST['keyword_search']);
 
 $award_id = $purifier->purify($_REQUEST['award_id']);

@@ -12,8 +12,8 @@
 
 <body>
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $year = $purifier->purify($_REQUEST['year']);
 if ($year == '') {
    $year = $report_year;

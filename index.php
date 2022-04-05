@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -15,12 +18,14 @@
 <div align="center"><br><br><h1>Chemistry Awards<br></h1><br>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 <?php
+session_start();
+include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-//$uniqname1 = $_SERVER['REMOTE_USER'];
-$uniqname1 = $_SERVER['REDIRECT_REMOTE_USER'];
-
-if (is_admin($uniqname1)) {
+//echo"<br>user: ";
+//echo $current_user;
+//var_export($_SESSION['user_membership']);
+if (is_admin($current_user)) {
 ?>
 <form action="admin/allawards.php">
     <input type="submit" value="Admin Site" />

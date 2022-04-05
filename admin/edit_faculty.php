@@ -12,8 +12,8 @@
 
 <body>
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 if (isset($_REQUEST['id']) AND (is_numeric($_REQUEST['id']))) {
        $id = $purifier->purify($_REQUEST[id]);
 }
