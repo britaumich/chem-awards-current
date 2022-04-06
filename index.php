@@ -21,21 +21,29 @@ session_start();
 include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-if (admin_access()) {
-?>
-<form action="admin/allawards.php">
-    <input type="submit" value="Admin Site" />
-</form>
-<?php
-} 
-if (non_admin_access()) {
-?>
-<form action="faculty/index.php">
+if ($_SESSION['login']) {
+  if (admin_access()) {
+  ?>
+    <form action="admin/allawards.php">
+      <input type="submit" value="Admin Site" />
+    </form>
+    <?php
+  } 
+  if (non_admin_access()) {
+  ?>
+  <form action="faculty/index.php">
     <input type="submit" value="Faculty Site" />
-</form>
-<?php
+  </form>
+  <?php
+  } else {
+     echo ("You are not authorized to run this action");
+  }
 } else {
-   echo ("You are not authorized to run this action");
+  ?>
+    <form action="login.php">
+      <input type="submit" value="Sign In" />
+    </form>
+    <?php
 }
 ?>
 </div>
