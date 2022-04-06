@@ -15,8 +15,8 @@ session_start();
 <?php 
 require_once('nav.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
-
-$sort = check_input($conn, $_REQUEST['sort']); 
+$search_id_list = array();
+//$sort = mysqli_real_escape_string($conn, $_REQUEST['sort']); 
 
 $sqls = "SELECT a.`id`, a.`type`, a.`Award_Name`, a.Due_Month, a.`Awarded_By`, a.`Link_to_Website`, a.`Description`, a.`eligibility`, a.who_is_eligible, a.`comments`";
 $from = " FROM `awards_descr` a";
@@ -32,17 +32,17 @@ $end = "none";
 
 if (isset($_REQUEST['submit'])) {
 
-     $type = check_input($conn, $_REQUEST['type']);
-//     $due_month = check_input($conn, $_REQUEST['due_month']);
-     $due_month = check_input($conn, $_REQUEST['month']);
-     $cluster = check_input($conn, $_REQUEST['cluster']);
+     $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+//     $due_month = mysqli_real_escape_string($conn, $_REQUEST['due_month']);
+     $due_month = mysqli_real_escape_string($conn, $_REQUEST['month']);
+     $cluster = mysqli_real_escape_string($conn, $_REQUEST['cluster']);
 
 
-//     $tag = check_input($conn, $_REQUEST['tag']);
-     $eligable = check_input($conn, $_REQUEST['eligable']);
-     $start = check_input($conn, $_REQUEST['start']);
-     $end = check_input($conn, $_REQUEST['end']);
-     $keyword_search = check_input($conn, $_REQUEST['keyword_search']);
+//     $tag = mysqli_real_escape_string($conn, $_REQUEST['tag']);
+     $eligable = mysqli_real_escape_string($conn, $_REQUEST['eligable']);
+     $start = mysqli_real_escape_string($conn, $_REQUEST['start']);
+     $end = mysqli_real_escape_string($conn, $_REQUEST['end']);
+     $keyword_search = mysqli_real_escape_string($conn, $_REQUEST['keyword_search']);
 
     $cluster_check = array();
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
@@ -113,7 +113,11 @@ echo ('<input type="submit" name="remove" value="Delete Awards">');
 
 // month
 echo "<br>Award Month: ";
-$month = check_input($conn, $_REQUEST['month']);
+if (isset($_REQUEST['month'])){
+ $month = mysqli_real_escape_string($conn, $_REQUEST['month']);
+} else {
+ $month = "";
+}
 if ($month == "" ) { $month = "%";}
 //    $sqlm ="SELECT DISTINCT due_month FROM `awards_descr` order by month(str_to_date(left(due_month, 3),'%b'))";
     $sqlm ="SELECT DISTINCT due_month FROM `awards_descr` ORDER BY FIELD(due_month, 'Anytime', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')";
@@ -122,7 +126,7 @@ echo "<select name='month'>";
 echo "<option select value='%'> - pick all  -</option>";
 while ($months = mysqli_fetch_array($resm, MYSQLI_BOTH)) {
            echo "<option";
-           if ($months[due_month] == $month) { echo " selected"; }
+           if ($months['due_month'] == $month) { echo " selected"; }
            echo " value='$months[due_month]'>$months[due_month]</option>";
 }
 echo "</select>";
@@ -214,7 +218,7 @@ echo ("
 </tr>
 ");
 // array for list of id
-$search_id_list = array();
+//$search_id_list = array();
 while ( $idata = mysqli_fetch_array($result, MYSQLI_BOTH) ) 
 {
 	
