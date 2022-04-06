@@ -22,6 +22,7 @@ function renderForm($conn, $dataid, $fac_id, $name, $year, $statusid, $comment, 
  <form action="" method="post">
  <input type="hidden" name="dataid" value="<?php echo $dataid; ?>"/>
  <input type="hidden" name="fac_id" value="<?php echo $fac_id; ?>"/>
+ <input type="hidden" name="name" value="<?php echo $name; ?>"/>
 <tr><th> ID: 
 <td><?php echo $dataid; ?></tr>
 <tr><th>Name: 
@@ -63,9 +64,11 @@ require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $keyword_search = $purifier->purify($_REQUEST['keyword_search']);
 
 $award_id = $purifier->purify($_REQUEST['award_id']);
+$error = '';
 if (isset($_REQUEST['submit'])) {
 if (isset($_REQUEST['dataid']) && is_numeric($_REQUEST['dataid'])) {
    $dataid = $purifier->purify($_REQUEST['dataid']);
+   $name = $purifier->purify($_REQUEST['name']);
    $fac_id = $purifier->purify($_REQUEST['fac_id']);
    $status = $purifier->purify($_REQUEST['status']);
    $year = $purifier->purify($_REQUEST['year']);

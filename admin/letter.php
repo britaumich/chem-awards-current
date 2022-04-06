@@ -15,8 +15,11 @@ session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 require_once "../php_mail.inc";
-$errorid = $purifier->purify($_REQUEST['errorid']);
-
+if (isset($_REQUEST['errorid'])) {
+  $errorid = $purifier->purify($_REQUEST['errorid']);
+}
+$again = '';
+$error = '';
 // if the recomtext field is empty 
 if(isset($_POST['recomtext']) && $_REQUEST['recomtext'] != ""){
 // let the spammer think that they got their message through
@@ -31,8 +34,16 @@ if(isset($_POST['submit'])) {
 
      $recid = 0;
      $recname = "-";
+     if (isset($_REQUEST['replacefile'])) { 
       $replacefile = $purifier->purify($_REQUEST['replacefile']);
+     } else {
+      $replacefile = '';
+     }
+     if (isset($_REQUEST['uniqname1'])) {
       $uniqname = $purifier->purify($_REQUEST['uniqname1']);
+     } else {
+      $uniqname = '';
+     }
      // $lettertype = $purifier->purify($_REQUEST['lettertype']);
      // $lettertype1 = $purifier->purify($_REQUEST['lettertype1']);
   $lettertype = "cv";
@@ -163,7 +174,11 @@ if ($again == "yes") {
         $result = mysqli_query($conn, $sql) or die("Query failed :".mysqli_error($conn));
         print("<select name='uniqname' id='uniqname'>");
         print("<option select value=''> - choose name -</option>");
-             
+        if (isset($_REQUEST['uniqname1'])) {
+          $uniqname = $purifier->purify($_REQUEST['uniqname1']);
+        } else {
+          $uniqname = "";
+        }     
         WHILE ($applicant_name = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
                 echo "<option";

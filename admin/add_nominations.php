@@ -15,18 +15,22 @@ session_start();
 <?php
 require_once('nav.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
-
 ?>
 
 <div align="center">
 <?php
-$award_id = $purifier->purify($_REQUEST['award_id']);
-
-$keyword_search = $purifier->purify($_REQUEST['keyword_search']);
+if (isset($_REQUEST['award_id'])) {
+  $award_id = $purifier->purify($_REQUEST['award_id']);
+} else {
+  $award_id = '';
+} 
 //echo "<br>award_id: ";
 //echo $award_id;
-
-$error = $purifier->purify($_REQUEST['error']);
+if (isset($_REQUEST['error'])) {
+  $error = $purifier->purify($_REQUEST['error']);
+} else {
+  $error = '';
+}
 if($error != ''){
       echo "<table><TR><TD align=center><span style=color:red><b>ERRORS!</b></span><TR><TD><span style=color:red>$error</span></table>";
   }
@@ -36,7 +40,11 @@ echo "<form name='form1' method='post' action='add_nominations.php'>";
 
 echo "<br>";
 echo "Search by Keywords (in Award Name and Awarded By) ";
-$keyword_search = $purifier->purify($_REQUEST['keyword_search']);
+if (isset($_REQUEST['keyword_search'])) {
+  $keyword_search = $purifier->purify($_REQUEST['keyword_search']);
+} else {
+  $keyword_search = '';
+}
 echo '<input type="text" name="keyword_search" size = "50" placeholder="-- keywords, separated by commas --" value="' . $keyword_search . '" >';
 
 echo "  <input type='submit' name='choose' value='Search'>";
@@ -67,7 +75,7 @@ else {
 // award_id != ''
   $where = ' WHERE id = ' . $award_id;
 }
-   $sqlsearch = "SELECT id, Award_Name, Awarded_By FROM awards_descr " . $where;
+   $sqlsearch = "SELECT id, Award_Name, Awarded_By, Link_to_Website FROM awards_descr " . $where;
    $stmtsearch = mysqli_stmt_init($conn);
 
    $ressearch = mysqli_query($conn, $sqlsearch) or die("Query failed :". mysqli_error($stmtsearch));
