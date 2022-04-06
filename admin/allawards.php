@@ -31,21 +31,35 @@ $start = "none";
 $end = "none";
 
 if (isset($_REQUEST['submit'])) {
-
+  if(isset($_REQUEST['type'])) {
      $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+  } else {
+     $type = '';
+  }  
 //     $due_month = mysqli_real_escape_string($conn, $_REQUEST['due_month']);
      $due_month = mysqli_real_escape_string($conn, $_REQUEST['month']);
+  if(isset($cluster)){   
      $cluster = mysqli_real_escape_string($conn, $_REQUEST['cluster']);
-
+  } else {
+     $cluster = "";
+  }
 
 //     $tag = mysqli_real_escape_string($conn, $_REQUEST['tag']);
+   if (isset($_REQUEST['eligable'])) {  
      $eligable = mysqli_real_escape_string($conn, $_REQUEST['eligable']);
+   }
+   if (isset($_REQUEST['start'])) {
      $start = mysqli_real_escape_string($conn, $_REQUEST['start']);
+   }
+   if (isset($_REQUEST['end'])) {
      $end = mysqli_real_escape_string($conn, $_REQUEST['end']);
+   }
      $keyword_search = mysqli_real_escape_string($conn, $_REQUEST['keyword_search']);
 
     $cluster_check = array();
+   if (isset($_REQUEST['cluster_check'])) {
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+   }
     if (!empty($cluster_check)) {
         $clusterlist = implode(", ", $cluster_check);
             $from = " FROM (SELECT `id`, `type`, `Award_Name`, Due_Month, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, who_is_eligible, `comments` FROM  `awards_descr` JOIN award_cluster ON awards_descr.id = award_cluster.award_id WHERE award_cluster.cluster_id IN (" . $clusterlist . ") GROUP BY awards_descr.id) a ";
@@ -103,11 +117,16 @@ echo ('<input type="submit" name="remove" value="Delete Awards">');
     echo "Type: ";
     echo "<select name='type'>";
         echo "<option select value='none'> - choose type -</option>";
+        if(isset($_REQUEST['type'])) {
+          $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+        } else {
+          $type = '';
+        } 
         while ($typelist = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
            echo "<option";
            if ($typelist['type'] == $type) { echo " selected"; } 
-           echo " value=$typelist[type]>$typelist[type]</option>";
+           echo " value=" . $typelist['type'] . ">" . $typelist['type'] . "</option>";
         }
     echo "</select><br>";
 
@@ -135,6 +154,10 @@ echo "</select>";
     echo "<br><br>Clusters: ";
 
 $sql = "SELECT id, name FROM clusters ORDER BY id";
+
+if(!isset($clusterlist)){
+$clusterlist = '';
+}
 
 $clustersids = array();
        $clustersids = explode(", ", $clusterlist);
@@ -171,6 +194,9 @@ if (mysqli_num_rows($result) != 0) {
     echo "</select>";
 */
 //    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search by Keywords (in Award Name and Awarded By)";
+if(!isset($keyword_search)){
+$keyword_search = "";
+}
     echo "<br><br>Search by Keywords (in Award Name and Awarded By)";
     echo '&nbsp;<input type="text" name="keyword_search" size = "40" placeholder="-- keywords, separated by commas --" value="' . $keyword_search . '" >';
     echo "<br>";

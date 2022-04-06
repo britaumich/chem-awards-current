@@ -28,9 +28,10 @@ $id = '';
 }
 //echo '<pre>all id'; var_export($search_id_list); echo '</pre>';
 
-if ($_REQUEST['edit_record'] == "Save changes") {
-
-  $id = (int)$purifier->purify($_REQUEST['id']);
+if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes") {
+  if (isset($_REQUEST['id'])) {
+   $id = (int)$purifier->purify($_REQUEST['id']);
+  }
   $type = $purifier->purify($_REQUEST['type']);
   $type1 = $purifier->purify($_REQUEST['type1']);
 if ($type1 !== "") { $type = $type1; }
@@ -41,7 +42,9 @@ if ($type1 !== "") { $type = $type1; }
   $Link_to_Website = $purifier->purify($_REQUEST['Link_to_Website']);
   $Description = $purifier->purify($_REQUEST['Description']);
   $eligibility = $purifier->purify($_REQUEST['eligibility']);
-  $who_is_eligible = $purifier->purify($_REQUEST['who_is_eligible']);
+  if (isset($_REQUEST['who_is_eligible'])) {
+    $who_is_eligible = $purifier->purify($_REQUEST['who_is_eligible']);
+  }
   $comments = $purifier->purify($_REQUEST['comments']);
 
 if ($id !== 0) {
@@ -79,7 +82,9 @@ else {
 //    $taglist = array();
 //    $taglist = purica_array($conn, $_REQUEST[taglist]);
     $cluster_check = array();
-    $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+    if (isset($_REQUEST['cluster_check'])) {
+      $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+    }
 // echo '<pre>cluster'; var_export($cluster_check); echo '</pre>';
     $clusterlist = array();
     $clusterlist = purica_array($conn, $_REQUEST['clusterlist']);
@@ -144,7 +149,7 @@ else {
     die("There was an error updating a record: ".mysqli_error($conn));
   }
 }
-
+$search_id_list = array();
 if ($id !== '') {
 	//Everything is peachy, pull record.
  if (!$search_id_list) {  
