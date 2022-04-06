@@ -23,7 +23,7 @@ if (isset($_REQUEST['id']) AND (is_numeric($_REQUEST['id']))) {
 else {
 $id = '';
 }
-if ($_REQUEST['edit_record'] == "Save changes") {
+if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes") {
 
   $id = $purifier->purify($_REQUEST['id']);
   $uniqname = $purifier->purify($_REQUEST['uniqname']);

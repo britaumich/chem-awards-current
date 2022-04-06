@@ -176,10 +176,10 @@ $sql1 = "SELECT id AS letter_id, type, link, upload_date FROM faculty_letters WH
 $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($conn));
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
         { ?>
-              <tr><td> <? print("$recUpload[type]") ?> :</td><td>
-                 <? $link = $uploaddir . $recUpload['link'];
+              <tr><td> <?php print("$recUpload[type]") ?> :</td><td>
+                 <?php $link = $uploaddir . $recUpload['link'];
                    print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>
-              <td> <? print("$recUpload[upload_date]") ?></td>
+              <td> <?php print("$recUpload[upload_date]") ?></td>
 
                 <?php
                  $letter_id = $recUpload['letter_id'];
@@ -206,8 +206,6 @@ echo "<table>";
 echo "<th>Id<th>Award Name<th>year<th>status<th>Comments</tr>";
      while ( $faward = mysqli_fetch_array($resultf, MYSQLI_BOTH) ) {
          $status = $faward['status'];
-         $uniqname = $faward['uniqname'];
-         $dataid = $faward['dataid'];
          $faculty_id = $faward['faculty_id'];
          $year = $faward['year'];
 //           echo"<tr><td><a href='award-one.php?id=$faward[award_id]'>$faward[Award_Name]</a></td>";
