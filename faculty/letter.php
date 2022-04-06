@@ -26,7 +26,7 @@ echo $recomtext;
    echo "<h1>Thanks</h1>";
 exit;
 }
-if(isset($_POST[submit])) {
+if(isset($_POST['submit'])) {
 
       $replacefile = $purifier->purify($_REQUEST['replacefile']);
       $uniqname = $purifier->purify($_REQUEST['uniqname']);
@@ -108,7 +108,7 @@ if ($errorid == 0) {
 <?php
 }
 //$uniqname = $_SERVER["REMOTE_USER"];
-$uniqname = $_SERVER["REDIRECT_REMOTE_USER"];
+$uniqname = $_SESSION["current_user"];
 ?>
 <div align="center"><h2>Upload a CV <br><br><h2>
 </div></h2>

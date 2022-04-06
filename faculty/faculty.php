@@ -27,16 +27,17 @@ require_once('nav.php');
 if ($_REQUEST['edit_record'] == "Save changes")
 {
 
-  $id = $purifier->purify($_REQUEST[id]);
-  $uniqname1 = $purifier->purify($_REQUEST[uniqname]);
-   $uniqname = $_SERVER["REDIRECT_REMOTE_USER"];
+  $id = $purifier->purify($_REQUEST['id']);
+  $uniqname1 = $purifier->purify($_REQUEST['uniqname']);
+//   $uniqname = $_SERVER["REDIRECT_REMOTE_USER"];
+   $uniqname = $_SESSION["current_user"];
  if ($uniqname == $uniqname1)  {
-  $Name = $purifier->purify($_REQUEST[Name]);
-  $Rank = $purifier->purify($_REQUEST[Rank]);
+  $Name = $purifier->purify($_REQUEST['Name']);
+  $Rank = $purifier->purify($_REQUEST['Rank']);
 
-  $Year_PhD = $purifier->purify($_REQUEST[Year_PhD]);
-  $birth_year = $purifier->purify($_REQUEST[birth_year]);
-  $Appt_Start = $purifier->purify($_REQUEST[Appt_Start]);
+  $Year_PhD = $purifier->purify($_REQUEST['Year_PhD']);
+  $birth_year = $purifier->purify($_REQUEST['birth_year']);
+  $Appt_Start = $purifier->purify($_REQUEST['Appt_Start']);
 
 if ($id !== "") {
   $sql = "UPDATE faculty SET
@@ -52,7 +53,6 @@ else {
   // add a new record
  $sql = "INSERT INTO `faculty`(`uniqname`, `Name`, `Rank`, `Year_PhD`, `birth_year`, `Appt_Start`) VALUES ('$uniqname', '$Name', '$Rank', '$Year_PhD', '$birth_year', '$Appt_Start')";
 }
-//echo $sql;
   if (mysqli_query($conn, $sql)) { 
      if ($id == "") {
        // record was added not updated
@@ -60,10 +60,10 @@ else {
    }
 // add clusters
          $cluster_check = array();
-    $cluster_check = purica_array($conn, $_REQUEST[cluster_check]);
+    $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
 // echo '<pre>'; var_export($cluster_check); echo '</pre>';
     $clusterlist = array();
-    $clusterlist = purica_array($conn, $_REQUEST[clusterlist]);
+    $clusterlist = purica_array($conn, $_REQUEST['clusterlist']);
 // echo '<pre>'; var_export($clusterlist); echo '</pre>';
       if (!empty($cluster_check)) {
        // clusters
@@ -101,7 +101,8 @@ else {
 }
 
 //$uniqname = $_SERVER["REMOTE_USER"]; 
-$uniqname = $_SERVER["REDIRECT_REMOTE_USER"]; 
+//$uniqname = $_SERVER["REDIRECT_REMOTE_USER"]; 
+$uniqname = $_SESSION['current_user'];
 
 	//Everything is peachy, pull record.
 
@@ -128,7 +129,7 @@ echo "<select name='Rank'>";
 if (mysqli_num_rows($resultrank) != 0) {
      while ( $ranks = mysqli_fetch_array($resultrank, MYSQLI_BOTH) ) {
            echo "<option";
-           if ($ranks[rank] == $rank) { echo " selected"; }
+           if ($ranks['rank'] == $rank) { echo " selected"; }
            echo " value=$ranks[id]>$ranks[rank]</option>";
      }
      echo "</select>";
@@ -146,19 +147,19 @@ $sqlclusterids = "SELECT clusters.id FROM clusters INNER JOIN faculty_cluster ON
 $resultcluster_list = mysqli_query($conn, $sqlclusterids) or header('Location: ERROR.php?error="Unable to select clusters."');
 $clustersids = array();
 while ($cluster1 = mysqli_fetch_array ($resultcluster_list, MYSQLI_BOTH)) {
-   $clustersids[] = $cluster1[id];
+   $clustersids[] = $cluster1['id'];
 }
 $sqlcluster = "SELECT id, clusters.name FROM clusters";
 $resultcluster = mysqli_query($conn, $sqlcluster) or header('Location: ERROR.php?error="Unable to select clusters."');
 if (mysqli_num_rows($resultcluster) != 0) {
      while ( $clusters = mysqli_fetch_array($resultcluster, MYSQLI_BOTH) ) {
            echo "<input type='checkbox' name='cluster_check[";
-           echo $clusters[id];
+           echo $clusters['id'];
            echo "]' ";
            echo "value='$clusters[id]'";
-           if (in_array($clusters[id], $clustersids)) {echo " checked"; }
+           if (in_array($clusters['id'], $clustersids)) {echo " checked"; }
            echo ">$clusters[name]";
-           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters[id] . "'>";
+           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters['id'] . "'>";
      }
 }
 ?>
@@ -175,12 +176,12 @@ $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
         { ?>
               <tr><td> <? print("$recUpload[type]") ?> :</td><td>
-                 <? $link = $uploaddir . $recUpload[link];
+                 <? $link = $uploaddir . $recUpload['link'];
                    print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>
               <td> <? print("$recUpload[upload_date]") ?></td>
 
                 <?php
-                 $letter_id = $recUpload[letter_id];
+                 $letter_id = $recUpload['letter_id'];
             echo '<td>';
 echo "<form name='form3' action='delete_file.php' method='post'>";
 
