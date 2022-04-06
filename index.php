@@ -21,7 +21,7 @@ session_start();
 include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-if ($_SESSION['login']) {
+if (isset($_SESSION['login']) && $_SESSION['login']) {
   if (admin_access()) {
   ?>
     <form action="admin/allawards.php">
