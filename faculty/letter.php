@@ -14,7 +14,11 @@ session_start();
 <?php  
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
-$errorid = $purifier->purify($_REQUEST['errorid']);
+if (isset($_REQUEST['errorid'])) { 
+  $errorid = $purifier->purify($_REQUEST['errorid']);
+}       
+$again = '';
+$error = '';
 
 
 // if the recomtext field is empty 
@@ -28,7 +32,11 @@ exit;
 }
 if(isset($_POST['submit'])) {
 
+     if (isset($_REQUEST['replacefile'])) {
       $replacefile = $purifier->purify($_REQUEST['replacefile']);
+     } else {
+      $replacefile = '';
+     }
       $uniqname = $purifier->purify($_REQUEST['uniqname']);
       $lettertype = "cv";
 
@@ -73,7 +81,7 @@ if(isset($_POST['submit'])) {
         // upload ok
 //       $uploaddir = '/home/appspchem/upload/awards-files/';
         $upload_date = date("m-d-Y");
-        $filename = $lettertype . "_" . $recname . $uniqname . "_" . time() . ".pdf";
+        $filename = $lettertype . "_" . $uniqname . "_" . time() . ".pdf";
         $uploadfile = $uploaddir . $filename;
         $sql = "INSERT faculty_letters (uniqname, rec_id, link, type, upload_date) VALUES('$uniqname', 0, '$filename', '$lettertype', '$upload_date')";
 //echo $sql;

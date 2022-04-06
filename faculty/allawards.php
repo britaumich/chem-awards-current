@@ -16,7 +16,7 @@ session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 
-$sort = check_input($conn, $_REQUEST['sort']); 
+//$sort = check_input($conn, $_REQUEST['sort']); 
 
 $sqls = "SELECT a.`id`, a.`type`, a.`Award_Name`, a.Due_Month, a.`Awarded_By`, a.`Link_to_Website`, a.`Description`, a.`eligibility`, a.who_is_eligible, a.`comments`";
 $from = " FROM `awards_descr` a";
@@ -32,19 +32,30 @@ $end = "none";
 
 if (isset($_REQUEST['submit'])) {
 
-     $type = check_input($conn, $_REQUEST['type']);
-     $due_month = check_input($conn, $_REQUEST['month']);
-     $cluster = check_input($conn, $_REQUEST['cluster']);
+     if(isset($_REQUEST['type'])) {
+       $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+     } else {
+       $type = '';
+     }
+//     $due_month = check_input($conn, $_REQUEST['month']);
+  if(isset($cluster)){
+     $cluster = mysqli_real_escape_string($conn, $_REQUEST['cluster']);
+  } else {
+     $cluster = "";
+  }
 
-
-//     $tag = check_input($conn, $_REQUEST['tag']);
-//     $eligable = check_input($conn, $_REQUEST['eligable']);
-     $start = check_input($conn, $_REQUEST['start']);
-     $end = check_input($conn, $_REQUEST['end']);
-     $keyword_search = check_input($conn, $_REQUEST['keyword_search']);
+   if (isset($_REQUEST['start'])) {
+     $start = mysqli_real_escape_string($conn, $_REQUEST['start']);
+   }
+   if (isset($_REQUEST['end'])) {
+     $end = mysqli_real_escape_string($conn, $_REQUEST['end']);
+   }
+     $keyword_search = mysqli_real_escape_string($conn, $_REQUEST['keyword_search']);
 
     $cluster_check = array();
+   if (isset($_REQUEST['cluster_check'])) {
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+   }
     if (!empty($cluster_check)) {
         $clusterlist = implode(", ", $cluster_check);
             $from = " FROM (SELECT `id`, `type`, `Award_Name`, Due_Month, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, who_is_eligible, `comments` FROM  `awards_descr` JOIN award_cluster ON awards_descr.id = award_cluster.award_id WHERE award_cluster.cluster_id IN (" . $clusterlist . ") GROUP BY awards_descr.id) a ";
@@ -92,6 +103,11 @@ if (isset($_REQUEST['submit'])) {
     echo "Type: ";
     echo "<select name='type'>";
         echo "<option select value='none'> - choose type -</option>";
+        if(isset($_REQUEST['type'])) {
+          $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+        } else {
+          $type = '';
+        }
         while ($typelist = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
            echo "<option";
@@ -160,6 +176,9 @@ if ($end == "none" ) {
     echo "<br><br>Clusters: ";
 
 $sql = "SELECT id, name FROM clusters ORDER BY id";
+if(!isset($clusterlist)){
+  $clusterlist = '';
+}
 
 $clustersids = array();
        $clustersids = explode(", ", $clusterlist);
@@ -196,6 +215,9 @@ if (mysqli_num_rows($result) != 0) {
     echo "</select>";
 */
 //    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search by Keywords (in Award Name and Awarded By)";
+if(!isset($keyword_search)){
+ $keyword_search = "";
+}
     echo "<br><br>Search by Keywords (in Award Name and Awarded By)";
     echo '&nbsp;<input type="text" name="keyword_search" size = "40" placeholder="-- keywords, separated by commas --" value="' . $keyword_search . '" >';
     echo "<br>";

@@ -24,7 +24,7 @@ require_once('nav.php');
 
 <?php
 
-if ($_REQUEST['edit_record'] == "Save changes")
+if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes")
 {
 
   $id = $purifier->purify($_REQUEST['id']);
@@ -36,7 +36,7 @@ if ($_REQUEST['edit_record'] == "Save changes")
   $Rank = $purifier->purify($_REQUEST['Rank']);
 
   $Year_PhD = $purifier->purify($_REQUEST['Year_PhD']);
-  $birth_year = $purifier->purify($_REQUEST['birth_year']);
+  //$birth_year = $purifier->purify($_REQUEST['birth_year']);
   $Appt_Start = $purifier->purify($_REQUEST['Appt_Start']);
 
 if ($id !== "") {
@@ -45,7 +45,6 @@ if ($id !== "") {
       Name = '$Name',
       Rank = '$Rank',
       Year_PhD = '$Year_PhD',
-      birth_year = '$birth_year',
       Appt_Start = '$Appt_Start'
       WHERE id ='$id'";
 }
@@ -60,7 +59,9 @@ else {
    }
 // add clusters
          $cluster_check = array();
+   if (isset($_REQUEST['cluster_check'])) { 
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+   }
 // echo '<pre>'; var_export($cluster_check); echo '</pre>';
     $clusterlist = array();
     $clusterlist = purica_array($conn, $_REQUEST['clusterlist']);
