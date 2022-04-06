@@ -26,7 +26,7 @@ $keyword_search = $purifier->purify($_REQUEST['keyword_search']);
 //echo "<br>award_id: ";
 //echo $award_id;
 
-$error = $purifier->purify($_REQUEST[error]);
+$error = $purifier->purify($_REQUEST['error']);
 if($error != ''){
       echo "<table><TR><TD align=center><span style=color:red><b>ERRORS!</b></span><TR><TD><span style=color:red>$error</span></table>";
   }
@@ -46,7 +46,7 @@ echo "<br><div align='center'><img src='../images/linecalendarpopup500.jpg'></di
 
 echo "<br>";
 
-if (isset($_REQUEST[choose]) || $keyword_search != '') {
+if (isset($_REQUEST['choose']) || $keyword_search != '') {
   if ($award_id == "") {
 //   $awids = array();
 
@@ -68,8 +68,11 @@ else {
   $where = ' WHERE id = ' . $award_id;
 }
    $sqlsearch = "SELECT id, Award_Name, Awarded_By FROM awards_descr " . $where;
-      $stmtsearch = prepare($sqlsearch);
-   $ressearch = $stmtsearch->execute($conn) or die($stmtsearch->error);
+   $stmtsearch = mysqli_stmt_init($conn);
+
+   $ressearch = mysqli_query($conn, $sqlsearch) or die("Query failed :". mysqli_error($stmtsearch));
+
+//   $ressearch = $stmtsearch->execute($conn) or die($stmtsearch->error);
 //echo "<br>";
 //echo $sqlsearch;
 //echo "<br>";
@@ -84,7 +87,7 @@ if ($award_id == '') {
 
    while ($adata = mysqli_fetch_array($ressearch, MYSQLI_BOTH) ) {
 echo "<tr>";
-           $id = $adata[id];
+           $id = $adata['id'];
                 echo "<td><a href='$adata[Link_to_Website]' target='_blank'>$adata[Award_Name]</td>";
                 echo "<td>$adata[Awarded_By]</td>";
 
@@ -152,15 +155,13 @@ echo ('<td> <input type="submit" name="submit" value="Add"></td>');
 
 $sqllist = "SELECT faculty_awards.id as dataid, faculty_awards.`uniqname` as uniqname, faculty_awards.faculty_id AS faculty_id, faculty.Name, award_status.`status`, `year`, `comment` FROM `faculty_awards`JOIN faculty ON faculty_awards.faculty_id = faculty.id, award_status WHERE faculty_awards.status = award_status.id AND award_id = $award_id ORDER BY year, award_status.status";
 //echo $sqllist;
-
-      $stmtlist = prepare($sqllist);
-   $reslist = $stmtlist->execute($conn) or die($stmtlist->error);
+$reslist = mysqli_query($conn, $sqllist) or die("Query failed :".mysqli_error($conn));
 
 $total=mysqli_num_rows($reslist);
 
 while ($faward = mysqli_fetch_array($reslist, MYSQLI_BOTH) )
 {
-    $dataid = $faward[dataid];
+    $dataid = $faward['dataid'];
     $status = $faward['status'];
     $uniqname = $faward['uniqname'];
     $faculty_id = $faward['faculty_id'];

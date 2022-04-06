@@ -106,7 +106,7 @@ echo ('<input type="submit" name="remove" value="Delete Awards">');
         while ($typelist = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
            echo "<option";
-           if ($typelist[type] == $type) { echo " selected"; } 
+           if ($typelist['type'] == $type) { echo " selected"; } 
            echo " value=$typelist[type]>$typelist[type]</option>";
         }
     echo "</select><br>";
@@ -232,7 +232,7 @@ echo "<form name='form3' action='award.php' method='post'>";
      $arr = serialize($search_id_list);
      echo "<input type='hidden' name='search_id_list' value='" . $arr . "'>"  ;
 
-echo '<input type="hidden" name="award_id" value="' . $adata[id] . '">';
+echo '<input type="hidden" name="award_id" value="' . $adata['id'] . '">';
 echo ('<td> <input type="submit" name="List" value="Open"></td>');
  echo('</form></td>');
 
@@ -240,15 +240,15 @@ echo "<form name='form4' action='edit_award.php' method='post'>";
      $arr = serialize($search_id_list);
      echo "<input type='hidden' name='search_id_list' value='" . $arr . "'>"  ;
 
-echo '<input type="hidden" name="id" value="' . $adata[id] . '">';
+echo '<input type="hidden" name="id" value="' . $adata['id'] . '">';
 echo ('<td> <input type="submit" name="Edit" value="Edit"></td>');
  echo('</form></td>');
 		echo "<td><a href='$adata[Link_to_Website]' target='_blank'>$adata[Award_Name]</td>";
 		echo "<td>$adata[Due_Month]</td>";
 		echo "<td>$adata[Awarded_By]</td>";
-   $aname = $adata[Award_Name];
-    $descr = $adata[Description];
-    $elig = $adata[eligibility];
+   $aname = $adata['Award_Name'];
+    $descr = $adata['Description'];
+    $elig = $adata['eligibility'];
     $descr = preg_replace("/\r?\n/", "\\n", addslashes($descr));
     $elig = preg_replace("/\r?\n/", "\\n", addslashes($elig));
 

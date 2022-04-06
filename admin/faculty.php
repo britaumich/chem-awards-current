@@ -23,9 +23,9 @@ if ($year == '') {
 }
    
 		
-$id = $purifier->purify($_REQUEST[id]);
+$id = $purifier->purify($_REQUEST['id']);
 if ($id == "") {
-     $uniqname = $purifier->purify($_REQUEST[uniqname]);
+     $uniqname = $purifier->purify($_REQUEST['uniqname']);
      $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`  FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
 }
 else {
@@ -108,7 +108,7 @@ $uniqname = $adata['uniqname'];
         <th>Clusters</th>
 
 <tr>
-<td><a href='edit_faculty.php?id=<?php echo $adata[id]; ?>'><?php echo $uniqname; ?></a></td>  
+<td><a href='edit_faculty.php?id=<?php echo $adata['id']; ?>'><?php echo $uniqname; ?></a></td>  
 <td> <?php print($adata['Name']) ?> 
 <td> <?php print($adata['rank']) ?> 
 <td> <?php print($adata['Year_PhD']) ?> 
@@ -170,7 +170,7 @@ $sql1 = "SELECT * FROM faculty_letters WHERE uniqname = '$uniqname' ORDER BY typ
 //echo $sql1;
 $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($conn));
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
-       { $link = $uploaddir . $recUpload[link];
+       { $link = $uploaddir . $recUpload['link'];
 ?>
               <tr><td> <? print("$recUpload[type]") ?> :</td><td>
                  <? print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>

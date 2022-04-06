@@ -20,17 +20,23 @@ $order = " ORDER BY Name";
 $sqls = "SELECT faculty.`id` as id, `uniqname`, `Name`, faculty.`Rank`, rank.rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty` JOIN rank ON faculty.Rank = rank.id ";
 $sqlsearch = $sqls . $order;
 
-if (isset($_REQUEST[delete]))  {
- $id = (int)$_REQUEST[id];
+if (isset($_REQUEST['delete']))  {
+ $id = (int)$_REQUEST['id'];
  $sqld = "DELETE FROM `faculty` WHERE id = " . $id;
 //echo $sqld;
- $stmtd = prepare($sqld);
- $resd = $stmtd->execute($conn) or die($stmtd->error);
- echo "<br>The award has been removed<br><br>";
+ $stmtd = mysqli_stmt_init($conn);
+ if (!mysqli_stmt_prepare($stmtd, $sqld)) {
+        print 'failed to prepare statement.\n';
+        echo mysqli_error($conn);
+   }
+   else {
+      mysqli_stmt_execute($stmtd) or die("Query failed :". mysqli_stmt_error($stmtd));
+      echo "<br>The faculty record has been removed<br><br>";
+   }
 
 }
 
-if (isset($_POST[submit])) {
+if (isset($_POST['submit'])) {
 
      $rank = check_input($conn,$_REQUEST['Rank']);
      $due_year = check_input($conn,$_REQUEST['due_year']);
@@ -59,7 +65,7 @@ echo "Rank: <select name='Rank'>";
 if (mysqli_num_rows($resultrank) != 0) {
      while ( $ranks = mysqli_fetch_array($resultrank, MYSQLI_BOTH) ) {
            echo "<option";
-           if ($ranks[id] == $rank) { echo " selected"; }
+           if ($ranks['id'] == $rank) { echo " selected"; }
            echo " value=$ranks[id]>$ranks[rank]</option>";
      }
      echo "</select><br>";
@@ -102,14 +108,14 @@ echo ("<table>
 while ( $adata = mysqli_fetch_array($result, MYSQLI_BOTH) ) 
 {
 	
-   $id = $adata[id];
+   $id = $adata['id'];
 	echo ("<tr>");
 		
 //		echo "<td>$adata[id]</td>";
 echo "<form name='form3' action='deletefaculty.php' method='post'>";
 
-echo '<input type="hidden" name="id" value="' . $adata[id] . '">';
-echo ('<td> <input type="submit" name="delete" value="Delete ' . $adata[id] . '" onclick="return confirm(\'Are you sure to remove this award?\')"></td>');
+echo '<input type="hidden" name="id" value="' . $adata['id'] . '">';
+echo ('<td> <input type="submit" name="delete" value="Delete ' . $adata['id'] . '" onclick="return confirm(\'Are you sure to remove this award?\')"></td>');
  echo('</form></td>');
 
 		echo"<td><a href='faculty.php?id=$adata[id]'>$adata[uniqname]</a></td>";

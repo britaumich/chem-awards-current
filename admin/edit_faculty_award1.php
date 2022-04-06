@@ -38,7 +38,7 @@ print("<select name='status'>");
         WHILE ($sdata = mysqli_fetch_array($ress, MYSQLI_BOTH))
         {
                echo "<option";
-               if ($sdata[id] == $statusid) { echo " selected"; }
+               if ($sdata['id'] == $statusid) { echo " selected"; }
                echo " value='$sdata[id]'>$sdata[status]</option>";
         }
 echo "</select>";

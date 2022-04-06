@@ -20,7 +20,7 @@ $order = " ORDER BY Name";
 $sqls = "SELECT faculty.`id` as id, `uniqname`, `Name`, faculty.`Rank`, rank.rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty` JOIN rank ON faculty.Rank = rank.id ";
 $sqlsearch = $sqls . $order;
 
-if (isset($_POST[submit])) {
+if (isset($_POST['submit'])) {
 
      $rank = $purifier->purify($_REQUEST['Rank']);
      $due_year = $purifier->purify($_REQUEST['due_year']);
@@ -52,7 +52,7 @@ echo "Rank: <select name='Rank'>";
 if (mysqli_num_rows($resultrank) != 0) {
      while ( $ranks = mysqli_fetch_array($resultrank, MYSQLI_BOTH) ) {
            echo "<option";
-           if ($ranks[id] == $rank) { echo " selected"; }
+           if ($ranks['id'] == $rank) { echo " selected"; }
            echo " value=$ranks[id]>$ranks[rank]</option>";
      }
      echo "</select><br>";
@@ -94,7 +94,7 @@ echo ("<table>
 while ( $adata = mysqli_fetch_array($result, MYSQLI_BOTH) ) 
 {
 	
-   $id = $adata[id];
+   $id = $adata['id'];
 	echo ("<tr>");
 		
 //		echo "<td>$adata[id]</td>";
