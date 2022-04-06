@@ -19,7 +19,6 @@ if (non_admin_access()) {
 <br>
 <?php
 } else {
-   echo ("You are not authorized to run this action");
-   exit;
+   forceRedirect('https://apps.chem.lsa.umich.edu/chem-awards/no_access.php');
 }
 ?>

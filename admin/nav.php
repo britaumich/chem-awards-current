@@ -1,6 +1,8 @@
 <?php
 require_once('../access.php');
 require_once('../library/HTMLPurifier.auto.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/basicLib.php');
+
 $purifier = new HTMLPurifier();
 if (admin_access()) {
 ?>
@@ -23,7 +25,6 @@ if (admin_access()) {
 <br>
 <?php
 } else {
-   echo ("You are not authorized to run this action");
-   exit;
+   forceRedirect('https://apps.chem.lsa.umich.edu/chem-awards/no_access.php');
 }
 ?>
