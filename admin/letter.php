@@ -15,9 +15,6 @@ session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 require_once "../php_mail.inc";
-if (isset($_REQUEST['errorid'])) {
-  $errorid = $purifier->purify($_REQUEST['errorid']);
-}
 $again = '';
 $error = '';
 // if the recomtext field is empty 
@@ -50,43 +47,7 @@ if(isset($_POST['submit'])) {
   $lettertype1 = "cv";
   if($uniqname =='' ){ $uniqname = $purifier->purify($_REQUEST['uniqname']); }
   if($uniqname =='' ){ $error.="Please select a faculty!<br />"; }
-/*
-  if($lettertype =='' ) {
-      if($lettertype1 =='' ) { 
-          $error.="Please select a type!<br />"; 
-      }
-      else {
-        $lettertype = $lettertype1;
-      }
-   }
-
-  if ($lettertype == "recommendation")  {
-      $recid = $purifier->purify($_REQUEST['recid']);
-  if($recid =='' ){ $error.="Please select a recommender!<br />"; }
-      $recnamenew = $purifier->purify($_REQUEST['recnamenew']);
-      $recemailnew = $purifier->purify($_REQUEST['recemailnew']);
-      $recname = str_replace(' ', '_', $recnamenew);
-
-      $recname = "-" . $recname . "-";
-  }
-  else {
-     $recid = 0;
-     $recname = "-";
-  }
-*/
-// store the file information to variables for easier access
-//$file1 = array();
-//print_r($_FILES);
-//echo '<pre>'; var_export($_FILES); echo '</pre>';
-//exit;
-/*
-   $tmp_name = $purifier->purify($_FILES['recfilename']['tmp_name']);
-   $type = $purifier->purify($_FILES['recfilename']['type']);
-   $name = $purifier->purify($_FILES['recfilename']['name']);
-   $size = $purifier->purify($_FILES['recfilename']['size']);
-   $file_extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-*/
-$tmp_name = $_FILES['recfilename']['tmp_name'];
+   $tmp_name = $_FILES['recfilename']['tmp_name'];
    $type = $_FILES['recfilename']['type'];
    $name = $_FILES['recfilename']['name'];
    $size = $_FILES['recfilename']['size'];
@@ -118,15 +79,12 @@ $tmp_name = $_FILES['recfilename']['tmp_name'];
           // rename and upload the file
      if ($_FILES['recfilename']['error'] === UPLOAD_ERR_OK) {
         // upload ok
-//       $uploaddir = '/home/appspchem/upload/awards-files/';
-//        $filename = $lettertype . $recname . $uniqname . "-" . time() . ".pdf";
         $filename = $lettertype . $recname . $uniqname . "-" . time() . "." . $file_extension;
         $uploadfile = $uploaddir . $filename;
         $upload_date = date("m-d-Y");
         $sql = "INSERT faculty_letters (uniqname, rec_id, link, type, upload_date) VALUES('$uniqname', $recid, '$filename', '$lettertype', '$upload_date')";
 //echo $sql;
         $res = mysqli_query($conn, $sql) or die("There was an error updating faculty_letters: ".mysqli_error($conn));
-
         if (move_uploaded_file($tmp_name, $uploadfile)) {
            chmod($uploadfile,0644);
                echo "The file has been uploaded.";
@@ -144,16 +102,6 @@ $tmp_name = $_FILES['recfilename']['tmp_name'];
 <input type="hidden" name="uniqname" value="<?php echo $uniqname; ?>" />
 
 <?php $ip = getenv("REMOTE_ADDR"); 
-if ($reclastname == "") { $reclastname = $purifier->purify($_REQUEST['reclastname']); }
-if ($recfirstname == "") { $recfirstname = $purifier->purify($_REQUEST['recfirstname']); }
-if ($errorid == 0) {
-?>
-<input type="hidden" name="id" value="<?php echo $id; ?>" />
-<?php
-}
-?>
-<input type="hidden" name="errorid" value="<?php echo $errorid; ?>" />
-<?php
 }
 ?>
 <div align="center"><h2>Upload a CV <br><br><h2>

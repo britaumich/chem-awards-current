@@ -41,7 +41,7 @@ $sqlrec = "SELECT id FROM faculty WHERE (id = IFNULL((SELECT MIN(id) FROM facult
 //echo $sqlrec;
 $res=mysqli_query($conn, $sqlrec) or die("There was an error: ".mysqli_error($conn));
         $id1 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
-        $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
+       // $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 
 if ($id == $minid) {
     $idp = $id;
@@ -53,7 +53,8 @@ elseif ($id == $maxid) {
 }
 else {
      $idp = $id1;
-     $idn = $id2;
+//     $idn = $id2;
+     $idn = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 }
 ?>
 
@@ -170,7 +171,7 @@ $sql1 = "SELECT * FROM faculty_letters WHERE uniqname = '$uniqname' ORDER BY typ
 //echo $sql1;
 $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($conn));
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
-       { $link = $uploaddir . $recUpload['link'];
+       { $link = '../uploadfiles/' . $recUpload['link'];
 ?>
               <tr><td> <? print("$recUpload[type]") ?> :</td><td>
                  <? print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>
