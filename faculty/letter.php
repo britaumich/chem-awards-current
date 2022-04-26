@@ -14,12 +14,9 @@ session_start();
 <?php  
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
-if (isset($_REQUEST['errorid'])) { 
-  $errorid = $purifier->purify($_REQUEST['errorid']);
-}       
 $again = '';
 $error = '';
-
+$pdf = 0;
 
 // if the recomtext field is empty 
 if(isset($_POST['recomtext']) && $_REQUEST['recomtext'] != ""){
@@ -66,7 +63,6 @@ if(isset($_POST['submit'])) {
      if($pdf == 1) {
            $error.="Please select a pdf file again! (for security reasons the script can't remember a file name)<br />";
      }
-//     echo "<table><TR><TD align=center><span style=color:red><b>ERRORS!</b></span><TR><TD><span style=color:red>$error</span></table>";
      echo "<table><TR><TD><span style=color:red>$error</span></table>";
   }
   else {
@@ -79,7 +75,6 @@ if(isset($_POST['submit'])) {
           // rename and upload the file
      if ($_FILES['recfilename']['error'] === UPLOAD_ERR_OK) {
         // upload ok
-//       $uploaddir = '/home/appspchem/upload/awards-files/';
         $upload_date = date("m-d-Y");
         $filename = $lettertype . "_" . $uniqname . "_" . time() . ".pdf";
         $uploadfile = $uploaddir . $filename;
@@ -104,16 +99,6 @@ if(isset($_POST['submit'])) {
 <input type="hidden" name="uniqname" value="<?php echo $uniqname; ?>" />
 
 <?php $ip = getenv("REMOTE_ADDR"); 
-if ($reclastname == "") { $reclastname = $purifier->purify($_REQUEST['reclastname']); }
-if ($recfirstname == "") { $recfirstname = $purifier->purify($_REQUEST['recfirstname']); }
-if ($errorid == 0) {
-?>
-<input type="hidden" name="id" value="<?php echo $id; ?>" />
-<?php
-}
-?>
-<input type="hidden" name="errorid" value="<?php echo $errorid; ?>" />
-<?php
 }
 //$uniqname = $_SERVER["REMOTE_USER"];
 $uniqname = $_SESSION["current_user"];
