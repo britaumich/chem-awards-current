@@ -16,6 +16,9 @@ if (non_admin_access()) {
 <a class="navlink" href="letter.php">Upload a CV</a>
 <a class="navlink" href="allawards.php">All Awards</a>
 </div>
+<div style="color:blue;text-align:center">
+The application is moved to a new server. If you have bookmarks please update them.
+</div>
 <br>
 <?php
 } else {
