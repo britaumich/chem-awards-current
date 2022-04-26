@@ -17,6 +17,7 @@ require_once('nav.php');
 require_once "../php_mail.inc";
 $again = '';
 $error = '';
+$pdf = 0;
 // if the recomtext field is empty 
 if(isset($_POST['recomtext']) && $_REQUEST['recomtext'] != ""){
 // let the spammer think that they got their message through
@@ -25,8 +26,7 @@ echo $recomtext;
    echo "<h1>Thanks</h1>";
 exit;
 }
-//$recnamenew = "";
-//$recemailnew = "";
+$uniqname = '';
 if(isset($_POST['submit'])) {
 
      $recid = 0;
@@ -36,17 +36,16 @@ if(isset($_POST['submit'])) {
      } else {
       $replacefile = '';
      }
-     if (isset($_REQUEST['uniqname1'])) {
-      $uniqname = $purifier->purify($_REQUEST['uniqname1']);
-     } else {
-      $uniqname = '';
-     }
      // $lettertype = $purifier->purify($_REQUEST['lettertype']);
      // $lettertype1 = $purifier->purify($_REQUEST['lettertype1']);
   $lettertype = "cv";
   $lettertype1 = "cv";
-  if($uniqname =='' ){ $uniqname = $purifier->purify($_REQUEST['uniqname']); }
-  if($uniqname =='' ){ $error.="Please select a faculty!<br />"; }
+  if (isset($_REQUEST['uniqname']) && $_REQUEST['uniqname'] != '') {
+   $uniqname = $purifier->purify($_REQUEST['uniqname']);
+  } else {
+     $error.="Please select a faculty!<br />";
+     $pdf = 0;
+  }
    $tmp_name = $_FILES['recfilename']['tmp_name'];
    $type = $_FILES['recfilename']['type'];
    $name = $_FILES['recfilename']['name'];
@@ -98,10 +97,6 @@ if(isset($_POST['submit'])) {
 
 }
 
-?>
-<input type="hidden" name="uniqname" value="<?php echo $uniqname; ?>" />
-
-<?php $ip = getenv("REMOTE_ADDR"); 
 }
 ?>
 <div align="center"><h2>Upload a CV <br><br><h2>
@@ -122,11 +117,6 @@ if ($again == "yes") {
         $result = mysqli_query($conn, $sql) or die("Query failed :".mysqli_error($conn));
         print("<select name='uniqname' id='uniqname'>");
         print("<option select value=''> - choose name -</option>");
-        if (isset($_REQUEST['uniqname1'])) {
-          $uniqname = $purifier->purify($_REQUEST['uniqname1']);
-        } else {
-          $uniqname = "";
-        }     
         WHILE ($applicant_name = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
                 echo "<option";
