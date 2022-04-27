@@ -15,13 +15,17 @@ session_start();
 <div class="bodypad">
 <div align="center"><br>
 <div class="facrecbox1"><div class="textalignleft pad15and10">
+<br>
+<div style="color:blue;text-align:center">
+The application is moved to a new server. If you have bookmarks please update them.
+</div>
 <div align="center"><br><br><h1>Chemistry Awards<br></h1><br>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 <?php
 include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-if (isset($_SESSION['login']) && $_SESSION['login']) {
+if (isset($_SESSION['login']) && $_SESSION['login'] && isset($_SESSION['user_membership'])) {
   if (admin_access()) {
   ?>
     <form action="admin/allawards.php">
