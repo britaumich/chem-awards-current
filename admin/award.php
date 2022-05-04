@@ -34,7 +34,9 @@ $minid = min(array_keys($search_id_list));
 $key_award_id = array_search($award_id, $search_id_list);
 if ($key_award_id == $minid) {
     $idp = $search_id_list[$key_award_id];
-    $idn = $search_id_list[$key_award_id + 1];
+    if ($minid < $maxid) {
+      $idn = $search_id_list[$key_award_id + 1];
+    }
 }
 elseif ($key_award_id == $maxid) {
     $idn = $search_id_list[$key_award_id];
