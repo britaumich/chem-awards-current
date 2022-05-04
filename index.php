@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -12,25 +15,41 @@
 <div class="bodypad">
 <div align="center"><br>
 <div class="facrecbox1"><div class="textalignleft pad15and10">
+<br>
+<div style="color:blue;text-align:center">
+The application is moved to a new server. If you have bookmarks please update them.
+</div>
 <div align="center"><br><br><h1>Chemistry Awards<br></h1><br>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 <?php
+include('access.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
-//$uniqname1 = $_SERVER['REMOTE_USER'];
-$uniqname1 = $_SERVER['REDIRECT_REMOTE_USER'];
-
-if (is_admin($uniqname1)) {
-?>
-<form action="admin/allawards.php">
-    <input type="submit" value="Admin Site" />
-</form>
-<?php
+if (isset($_SESSION['login']) && $_SESSION['login'] && isset($_SESSION['user_membership'])) {
+  if (admin_access()) {
+  ?>
+    <form action="admin/allawards.php">
+      <input type="submit" value="Admin Site" />
+    </form>
+    <?php
+  } 
+  if (non_admin_access()) {
+  ?>
+  <form action="faculty/index.php">
+    <input type="submit" value="Faculty Site" />
+  </form>
+  <?php
+  } else {
+     echo ("You are not authorized to run this action");
+  }
+} else {
+  ?>
+    <form action="login.php">
+      <input type="submit" value="Sign In" />
+    </form>
+    <?php
 }
 ?>
-<form action="faculty/index.php">
-    <input type="submit" value="Faculty Site" />
-</form>
 </div>
 <bR><div align="center"><img src="images/linecalendarpopup500.jpg"></div><Br>
 

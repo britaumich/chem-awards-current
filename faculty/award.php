@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -12,9 +15,9 @@
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 		
-$award_id = $purifier->purify($_REQUEST[award_id]);
+$award_id = $purifier->purify($_REQUEST['award_id']);
 $search_id_list = array();
-$search_id_list = unserialize($_REQUEST[search_id_list]);
+$search_id_list = unserialize($_REQUEST['search_id_list']);
 $search_id_list = purica_array($conn, $search_id_list);
 
 //echo '<pre>all id'; var_export($search_id_list); echo '</pre>';

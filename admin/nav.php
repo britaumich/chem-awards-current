@@ -1,8 +1,10 @@
-<?
-//function navbar()
-//{
+<?php
+require_once('../access.php');
 require_once('../library/HTMLPurifier.auto.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/basicLib.php');
+
 $purifier = new HTMLPurifier();
+if (admin_access()) {
 ?>
 <div class="bodypad">
 <div align="center"><br>
@@ -13,14 +15,14 @@ $purifier = new HTMLPurifier();
 <a class="navlink" href="allawards.php">All Awards</a>
 <a class="navlink" href="allfaculty.php">All Faculty</a>
 <a class="navlink" href="letter.php">Upload Documents</a>
-<!--
-<a class="navlink" href="check_award.php">Faculty View</a>
-<a class="navlink" href="edit_eligibility.php">Eligibility List</a>
-<a class="navlink" href="award_interested.php">Who is interested</a>
--->
 <a class="navlink" href="add_nominations.php">Award Status Update</a>
 </div>
+<div style="color:blue;text-align:center">
+The application is moved to a new server. If you have bookmarks please update them.
+</div>
 <br>
-<?
-//}
-
+<?php
+} else {
+   forceRedirect('https://apps.chem.lsa.umich.edu/chem-awards/no_access.php');
+}
+?>

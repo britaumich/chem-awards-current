@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "../dbConnect.inc";
 
 $uniqname = check_input($conn, $_REQUEST['uniqname']);

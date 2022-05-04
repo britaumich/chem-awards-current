@@ -1,7 +1,9 @@
 <?php
-//function navbar()
+session_start();
 require_once('../library/HTMLPurifier.auto.php');
+require_once('../access.php');
 $purifier = new HTMLPurifier();
+if (non_admin_access()) {
 ?>
 <div class="bodypad">
 
@@ -14,5 +16,12 @@ $purifier = new HTMLPurifier();
 <a class="navlink" href="letter.php">Upload a CV</a>
 <a class="navlink" href="allawards.php">All Awards</a>
 </div>
+<div style="color:blue;text-align:center">
+The application is moved to a new server. If you have bookmarks please update them.
+</div>
 <br>
-
+<?php
+} else {
+   forceRedirect('https://apps.chem.lsa.umich.edu/chem-awards/no_access.php');
+}
+?>

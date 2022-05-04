@@ -1,3 +1,6 @@
+<?php      
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -12,8 +15,8 @@
 
 <body>
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $year = $purifier->purify($_REQUEST['year']);
 if ($year == '') {
    $year = $report_year;

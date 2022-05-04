@@ -1,3 +1,6 @@
+<?php      
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -12,17 +15,16 @@
 
 <body>
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
-$year = $purifier->purify($_REQUEST['year']);
-if ($year == '') {
-   $year = $report_year;
-}
-   
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 		
-$id = $purifier->purify($_REQUEST[id]);
+if (isset($_REQUEST['id'])) {
+  $id = $purifier->purify($_REQUEST['id']);
+} else {
+  $id = "";
+}
 if ($id == "") {
-     $uniqname = $purifier->purify($_REQUEST[uniqname]);
+     $uniqname = $purifier->purify($_REQUEST['uniqname']);
      $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`  FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
 }
 else {
@@ -39,7 +41,7 @@ $sqlrec = "SELECT id FROM faculty WHERE (id = IFNULL((SELECT MIN(id) FROM facult
 //echo $sqlrec;
 $res=mysqli_query($conn, $sqlrec) or die("There was an error: ".mysqli_error($conn));
         $id1 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
-        $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
+       // $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 
 if ($id == $minid) {
     $idp = $id;
@@ -51,13 +53,13 @@ elseif ($id == $maxid) {
 }
 else {
      $idp = $id1;
-     $idn = $id2;
+//     $idn = $id2;
+     $idn = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 }
 ?>
 
 <div class='floatright'>
     <form name="forme" method="post" action="edit_faculty.php?id=<?php echo $id; ?>">
-           <input type="hidden" name="award_id" value="<?php echo $award_id; ?>">
          <input type='submit' name='Submit' value='Edit'>
         </form>
 <br>&nbsp;&nbsp;
@@ -105,7 +107,7 @@ $uniqname = $adata['uniqname'];
         <th>Clusters</th>
 
 <tr>
-<td><a href='edit_faculty.php?id=<?php echo $adata[id]; ?>'><?php echo $uniqname; ?></a></td>  
+<td><a href='edit_faculty.php?id=<?php echo $adata['id']; ?>'><?php echo $uniqname; ?></a></td>  
 <td> <?php print($adata['Name']) ?> 
 <td> <?php print($adata['rank']) ?> 
 <td> <?php print($adata['Year_PhD']) ?> 
@@ -134,17 +136,19 @@ if (mysqli_num_rows($resultcluster) != 0) {
 <?php
 // faculty information
 //$sql = "SELECT DISTINCT(year) FROM faculty_information ORDER BY year";
+if (isset($_REQUEST['year'])) {
+  $year = $purifier->purify($_REQUEST['year']);
+} else {
+   $year = $report_year;
+}
 $sql = "SELECT DISTINCT(year) FROM faculty_data ORDER BY year";
 $result = mysqli_query($conn, $sql) or die("Query failed :".mysqli_error($conn));
-//    echo "<select name='year' id='info' onchange='getinfo(this.value)'>";
-//    echo "<select name='year' id='info' onchange='self.location=self.location+'?year='+this.options[this.selectedIndex].value+'&uniqname='+document.getElementById('uniqname').value'>";
     echo "<select name='year' id='info' onchange='this.form.submit()'>";
     echo "<option select value='error'> - choose year -</option>";
-
        while ($data = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
            echo "<option";
-           if ($data[year] == $year) { echo " selected"; }
+           if ($data['year'] == $year) { echo " selected"; }
            echo " value='$data[year]'>$data[year]</option>";
         }
     echo "</select><br><br>";
@@ -167,7 +171,7 @@ $sql1 = "SELECT * FROM faculty_letters WHERE uniqname = '$uniqname' ORDER BY typ
 //echo $sql1;
 $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($conn));
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
-       { $link = $uploaddir . $recUpload[link];
+       { $link = '../uploadfiles/' . $recUpload['link'];
 ?>
               <tr><td> <? print("$recUpload[type]") ?> :</td><td>
                  <? print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>
@@ -188,8 +192,6 @@ echo "<table>";
 echo "<th>Id<th>Award Name<th>year<th>status<th>Comments</tr>";
      while ( $faward = mysqli_fetch_array($resultf, MYSQLI_BOTH) ) {
          $status = $faward['status'];
-         $uniqname = $faward['uniqname'];
-         $dataid = $faward['dataid'];
          $faculty_id = $faward['faculty_id'];
          $year = $faward['year'];
 //           echo"<tr><td><a href='award-one.php?id=$faward[award_id]'>$faward[Award_Name]</a></td>";

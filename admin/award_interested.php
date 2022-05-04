@@ -1,3 +1,6 @@
+<?php      
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -11,8 +14,8 @@
 </head>
 <body>
 <?php 
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 $award_id = $purifier->purify($_REQUEST[award_id]);
 $error = $purifier->purify($_REQUEST[error]);
 if($error != ''){

@@ -1,9 +1,11 @@
-.htaccess*
-admin/.htacess*
-faculty/.htaccess*
+.access_list.inc*
+admin/.access_list.inc*
+faculty/.access_list.inc*
 test*
+error_log
 admin/error_log
 faculty/error_log
+error_log
 *.swo
 *.swp
 uploadfiles

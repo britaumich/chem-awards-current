@@ -1,4 +1,5 @@
 <?php
+session_start();
 re_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

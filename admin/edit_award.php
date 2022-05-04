@@ -1,3 +1,6 @@
+<?php      
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -11,12 +14,12 @@
 </head>
 <body>
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 if (isset($_REQUEST['id']) AND (is_numeric($_REQUEST['id']))) {
-       $id = $purifier->purify($_REQUEST[id]);
+       $id = $purifier->purify($_REQUEST['id']);
    $search_id_list = array();
-   $search_id_list = unserialize($_REQUEST[search_id_list]);
+   $search_id_list = unserialize($_REQUEST['search_id_list']);
    $search_id_list = purica_array($conn, $search_id_list);
 
 }
@@ -25,21 +28,24 @@ $id = '';
 }
 //echo '<pre>all id'; var_export($search_id_list); echo '</pre>';
 
-if ($_REQUEST['edit_record'] == "Save changes") {
-
-  $id = (int)$purifier->purify($_REQUEST[id]);
-  $type = $purifier->purify($_REQUEST[type]);
-  $type1 = $purifier->purify($_REQUEST[type1]);
+if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes") {
+  if (isset($_REQUEST['id'])) {
+   $id = (int)$purifier->purify($_REQUEST['id']);
+  }
+  $type = $purifier->purify($_REQUEST['type']);
+  $type1 = $purifier->purify($_REQUEST['type1']);
 if ($type1 !== "") { $type = $type1; }
-  $Award_Name = $purifier->purify($_REQUEST[Award_Name]);
-  $due_month = $purifier->purify($_REQUEST[due_month]);
-  $due_day = $purifier->purify($_REQUEST[due_day]);
-  $Awarded_By = $purifier->purify($_REQUEST[Awarded_By]);
-  $Link_to_Website = $purifier->purify($_REQUEST[Link_to_Website]);
-  $Description = $purifier->purify($_REQUEST[Description]);
-  $eligibility = $purifier->purify($_REQUEST[eligibility]);
-  $who_is_eligible = $purifier->purify($_REQUEST[who_is_eligible]);
-  $comments = $purifier->purify($_REQUEST[comments]);
+  $Award_Name = $purifier->purify($_REQUEST['Award_Name']);
+  $due_month = $purifier->purify($_REQUEST['due_month']);
+  $due_day = $purifier->purify($_REQUEST['due_day']);
+  $Awarded_By = $purifier->purify($_REQUEST['Awarded_By']);
+  $Link_to_Website = $purifier->purify($_REQUEST['Link_to_Website']);
+  $Description = $purifier->purify($_REQUEST['Description']);
+  $eligibility = $purifier->purify($_REQUEST['eligibility']);
+  if (isset($_REQUEST['who_is_eligible'])) {
+    $who_is_eligible = $purifier->purify($_REQUEST['who_is_eligible']);
+  }
+  $comments = $purifier->purify($_REQUEST['comments']);
 
 if ($id !== 0) {
   $sql = "UPDATE awards_descr SET
@@ -76,10 +82,12 @@ else {
 //    $taglist = array();
 //    $taglist = purica_array($conn, $_REQUEST[taglist]);
     $cluster_check = array();
-    $cluster_check = purica_array($conn, $_REQUEST[cluster_check]);
+    if (isset($_REQUEST['cluster_check'])) {
+      $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+    }
 // echo '<pre>cluster'; var_export($cluster_check); echo '</pre>';
     $clusterlist = array();
-    $clusterlist = purica_array($conn, $_REQUEST[clusterlist]);
+    $clusterlist = purica_array($conn, $_REQUEST['clusterlist']);
 // echo '<pre>'; var_export($clusterlist); echo '</pre>';
       if (!empty($cluster_check)) {
        // clusters
@@ -141,7 +149,7 @@ else {
     die("There was an error updating a record: ".mysqli_error($conn));
   }
 }
-
+$search_id_list = array();
 if ($id !== '') {
 	//Everything is peachy, pull record.
  if (!$search_id_list) {  
@@ -149,7 +157,7 @@ if ($id !== '') {
      while ( $idata = mysqli_fetch_array($result, MYSQLI_BOTH) ) {
 
         // get a list of ids from $sqlsearch
-         $search_id_list[] = $idata[id];
+         $search_id_list[] = $idata['id'];
      }
  }
 // next and prev
@@ -240,7 +248,7 @@ $sqlp = "SELECT DISTINCT type FROM awards_descr";
        while ($typelist = mysqli_fetch_array($resultp, MYSQLI_BOTH))
         {
            echo "<option";
-           if ($typelist[type] == $type) { echo " selected"; }
+           if ($typelist['type'] == $type) { echo " selected"; }
            echo " value=$typelist[type]>$typelist[type]</option>";
         }
     echo "</select>";
@@ -252,19 +260,19 @@ $sqlclusterids = "SELECT clusters.id FROM clusters INNER JOIN award_cluster ON c
 $resultcluster_list = mysqli_query($conn, $sqlclusterids) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 $clustersids = array();
 while ($cluster1 = mysqli_fetch_array ($resultcluster_list, MYSQLI_BOTH)) {
-   $clustersids[] = $cluster1[id];
+   $clustersids[] = $cluster1['id'];
 }
 $sqlcluster = "SELECT id, clusters.name FROM clusters";
 $resultcluster = mysqli_query($conn, $sqlcluster) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 if (mysqli_num_rows($resultcluster) != 0) {
      while ( $clusters = mysqli_fetch_array($resultcluster, MYSQLI_BOTH) ) {
            echo "<input type='checkbox' name='cluster_check[";
-           echo $clusters[id];
+           echo $clusters['id'];
            echo "]' ";
            echo "value='$clusters[id]'";
-           if (in_array($clusters[id], $clustersids)) {echo " checked"; }
+           if (in_array($clusters['id'], $clustersids)) {echo " checked"; }
            echo ">$clusters[name]";  
-           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters[id] . "'>";
+           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters['id'] . "'>";
      }
 }
 ?> 
@@ -301,7 +309,7 @@ if (mysqli_num_rows($resultname) != 0) {
      echo "<select name='who_is_eligible'>";
      while ( $names = mysqli_fetch_array($resultname, MYSQLI_BOTH) ) {
            echo "<option value='$names[id]'";
-           if ($names[id] == $adata['who_is_eligible']) { echo " selected"; } 
+           if ($names['id'] == $adata['who_is_eligible']) { echo " selected"; } 
            echo ">$names[name]</option>";
      }
      echo "</select>";

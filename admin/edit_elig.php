@@ -1,4 +1,5 @@
 <?php
+session_start();
 function renderForm($id, $name, $error)
  {
  ?>
@@ -40,8 +41,8 @@ function renderForm($id, $name, $error)
  <?php
  }  // function
 ob_start();
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 
 if (isset($_REQUEST['submit'])) {
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {

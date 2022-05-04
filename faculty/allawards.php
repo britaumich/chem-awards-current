@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -13,7 +16,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 
-$sort = check_input($conn, $_REQUEST['sort']); 
+//$sort = check_input($conn, $_REQUEST['sort']); 
 
 $sqls = "SELECT a.`id`, a.`type`, a.`Award_Name`, a.Due_Month, a.`Awarded_By`, a.`Link_to_Website`, a.`Description`, a.`eligibility`, a.who_is_eligible, a.`comments`";
 $from = " FROM `awards_descr` a";
@@ -27,21 +30,32 @@ if ($sort !== '') {
 $start = "none";
 $end = "none";
 
-if (isset($_REQUEST[submit])) {
+if (isset($_REQUEST['submit'])) {
 
-     $type = check_input($conn, $_REQUEST['type']);
-     $due_month = check_input($conn, $_REQUEST['month']);
-     $cluster = check_input($conn, $_REQUEST['cluster']);
+     if(isset($_REQUEST['type'])) {
+       $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+     } else {
+       $type = '';
+     }
+//     $due_month = check_input($conn, $_REQUEST['month']);
+  if(isset($cluster)){
+     $cluster = mysqli_real_escape_string($conn, $_REQUEST['cluster']);
+  } else {
+     $cluster = "";
+  }
 
-
-//     $tag = check_input($conn, $_REQUEST['tag']);
-//     $eligable = check_input($conn, $_REQUEST['eligable']);
-     $start = check_input($conn, $_REQUEST['start']);
-     $end = check_input($conn, $_REQUEST['end']);
-     $keyword_search = check_input($conn, $_REQUEST['keyword_search']);
+   if (isset($_REQUEST['start'])) {
+     $start = mysqli_real_escape_string($conn, $_REQUEST['start']);
+   }
+   if (isset($_REQUEST['end'])) {
+     $end = mysqli_real_escape_string($conn, $_REQUEST['end']);
+   }
+     $keyword_search = mysqli_real_escape_string($conn, $_REQUEST['keyword_search']);
 
     $cluster_check = array();
-    $cluster_check = purica_array($conn, $_REQUEST[cluster_check]);
+   if (isset($_REQUEST['cluster_check'])) {
+    $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+   }
     if (!empty($cluster_check)) {
         $clusterlist = implode(", ", $cluster_check);
             $from = " FROM (SELECT `id`, `type`, `Award_Name`, Due_Month, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, who_is_eligible, `comments` FROM  `awards_descr` JOIN award_cluster ON awards_descr.id = award_cluster.award_id WHERE award_cluster.cluster_id IN (" . $clusterlist . ") GROUP BY awards_descr.id) a ";
@@ -89,10 +103,15 @@ if (isset($_REQUEST[submit])) {
     echo "Type: ";
     echo "<select name='type'>";
         echo "<option select value='none'> - choose type -</option>";
+        if(isset($_REQUEST['type'])) {
+          $type = mysqli_real_escape_string($conn, $_REQUEST['type']);
+        } else {
+          $type = '';
+        }
         while ($typelist = mysqli_fetch_array($result, MYSQLI_BOTH))
         {
            echo "<option";
-           if ($typelist[type] == $type) { echo " selected"; } 
+           if ($typelist['type'] == $type) { echo " selected"; } 
            echo " value=$typelist[type]>$typelist[type]</option>";
         }
     echo "</select><br>";
@@ -157,6 +176,9 @@ if ($end == "none" ) {
     echo "<br><br>Clusters: ";
 
 $sql = "SELECT id, name FROM clusters ORDER BY id";
+if(!isset($clusterlist)){
+  $clusterlist = '';
+}
 
 $clustersids = array();
        $clustersids = explode(", ", $clusterlist);
@@ -165,16 +187,16 @@ $clustersids = array();
     $result = mysqli_query($conn, $sql) or die("Query failed :".mysqli_error($conn));
 if (mysqli_num_rows($result) != 0) {
      while ( $clusters = mysqli_fetch_array($result, MYSQLI_BOTH) ) {
-           $cname = $clusters[name];
+           $cname = $clusters['name'];
            echo "<input type='checkbox' name='cluster_check[";
-           echo $clusters[id];
+           echo $clusters['id'];
            echo "]' ";
            echo "value='$clusters[id]'";
-           if (in_array($clusters[id], $clustersids)) {echo " checked"; }
+           if (in_array($clusters['id'], $clustersids)) {echo " checked"; }
                 echo ">$cname";
 
 //           echo ">$cname";
-           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters[id] . "'>";
+           echo "<input type='hidden' name='clusterlist[]' value='" . $clusters['id'] . "'>";
      }
 }
 
@@ -193,6 +215,9 @@ if (mysqli_num_rows($result) != 0) {
     echo "</select>";
 */
 //    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search by Keywords (in Award Name and Awarded By)";
+if(!isset($keyword_search)){
+ $keyword_search = "";
+}
     echo "<br><br>Search by Keywords (in Award Name and Awarded By)";
     echo '&nbsp;<input type="text" name="keyword_search" size = "40" placeholder="-- keywords, separated by commas --" value="' . $keyword_search . '" >';
     echo "<br>";
@@ -244,7 +269,7 @@ while ( $idata = mysqli_fetch_array($result, MYSQLI_BOTH) )
 {
 	
 // get a list of ids from $sqlsearch
-     $search_id_list[] = $idata[id];
+     $search_id_list[] = $idata['id'];
 }
  $result = mysqli_query($conn, $sqlsearch) or die("sqlsearch query failedb:".mysqli_error($conn));
 
@@ -257,16 +282,16 @@ echo "<form name='form3' action='award.php' method='post'>";
      $arr = serialize($search_id_list);
      echo "<input type='hidden' name='search_id_list' value='" . $arr . "'>"  ;
 
-echo '<input type="hidden" name="award_id" value="' . $adata[id] . '">';
+echo '<input type="hidden" name="award_id" value="' . $adata['id'] . '">';
 echo ('<td> <input type="submit" name="List" value="Open"></td>');
  echo('</form></td>');
 
 		echo "<td><a href='$adata[Link_to_Website]' target='_blank'>$adata[Award_Name]</td>";
 		echo "<td>$adata[Due_Month]</td>";
 		echo "<td>$adata[Awarded_By]</td>";
-   $aname = $adata[Award_Name];
-    $descr = $adata[Description];
-    $elig = $adata[eligibility];
+   $aname = $adata['Award_Name'];
+    $descr = $adata['Description'];
+    $elig = $adata['eligibility'];
     $descr = preg_replace("/\r?\n/", "\\n", addslashes($descr));
     $elig = preg_replace("/\r?\n/", "\\n", addslashes($elig));
 
