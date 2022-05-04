@@ -63,7 +63,9 @@ else {
      }
 // add clusters
          $cluster_check = array();
+  if (isset($_REQUEST['cluster_check'])) {
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+  }
 // echo '<pre>'; var_export($cluster_check); echo '</pre>';
     $clusterlist = array();
     $clusterlist = purica_array($conn, $_REQUEST['clusterlist']);
@@ -114,7 +116,7 @@ $sqlrec = "SELECT id FROM faculty WHERE (id = IFNULL((SELECT MIN(id) FROM facult
 //echo $sqlrec;
 $res=mysqli_query($conn, $sqlrec) or die("There was an error: ".mysqli_error($conn));
         $id1 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
-        $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
+    //    $id2 = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 
 if ($id == $minid) {
     $idp = $id;
@@ -126,7 +128,8 @@ elseif ($id == $maxid) {
 }
 else {
      $idp = $id1;
-     $idn = $id2;
+   //  $idn = $id2;
+     $idn = mysqli_fetch_array($res, MYSQLI_BOTH)['id'];
 }
 ?>
 <div class='floatright'>
@@ -166,22 +169,35 @@ else {
         </form>
 <?php
 }
-$sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
+if ($id == '') {
+  $uniqname = '';
+  $Name = '';
+  $rank = '';
+  $Year_PhD = '';
+  $birth_year = '';
+  $Appt_Start = '';
+} else {
+  $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
 //echo $sql;
-	//$result=mysqli_query($conn, $sql) or die("There was an error: ".mysqli_error($conn));
 	$result=mysqli_query($conn, $sql) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 	$adata = mysqli_fetch_array($result, MYSQLI_BOTH);
+  $uniqname = $adata['uniqname'];
+  $Name = $adata['Name'];
+  $rank = $adata['rank'];
+  $Year_PhD = $adata['Year_PhD'];
+  $birth_year = $adata['birth_year'];
+  $Appt_Start = $adata['Appt_Start'];
+}
 ?>	
     <form name="form" method="post" action="edit_faculty.php">
 <table>
 <tr>
-<th>id: <td> <?php print($adata['id']) ?>
+<th>id: <td> <?php print($id) ?>
 <INPUT type ='hidden' name='id' value='<?php echo $id; ?>'>
-<tr><th>Uniqname:<td><input type="text" name="uniqname" value="<?php print($adata['uniqname']) ?>">
-<tr><th>Name:<td><input type="text" name="Name" value="<?php print($adata['Name']) ?>">
+<tr><th>Uniqname:<td><input type="text" name="uniqname" value="<?php print($uniqname) ?>">
+<tr><th>Name:<td><input type="text" name="Name" value="<?php print($Name) ?>">
 <tr><th>Rank:<td>choose from the list &nbsp;&nbsp; 
 <?php
-$rank = $adata['rank'];
 $sqlrank = "SELECT id, rank FROM rank";
 $resultrank = mysqli_query($conn, $sqlrank) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 echo "<select name='Rank'>";
@@ -196,9 +212,9 @@ if (mysqli_num_rows($resultrank) != 0) {
 ?> 
 &nbsp;&nbsp;or&nbsp;&nbsp;<input type="text" name="rank1" placeholder="-- enter new rank --" value="" >
 
-<tr><th>Year_PhD:<td><input type="text" name="Year_PhD" value="<?php print($adata['Year_PhD']) ?>">
-<tr><th>Birth Year:<td><input type="text" name="birth_year" value="<?php print($adata['birth_year']) ?>">
-<tr><th>Appt_Start:<td><input type="text" name="Appt_Start" value="<?php print($adata['Appt_Start']) ?>">
+<tr><th>Year_PhD:<td><input type="text" name="Year_PhD" maxlength="4" value="<?php print($Year_PhD) ?>">
+<tr><th>Birth Year:<td><input type="text" name="birth_year" maxlength="4" value="<?php print($birth_year) ?>">
+<tr><th>Appt_Start:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($Appt_Start) ?>">
 <tr><th>cluster:<td>
 <?php
 $sqlclusterids = "SELECT clusters.id FROM clusters INNER JOIN faculty_cluster ON clusters.id = faculty_cluster.cluster_id WHERE faculty_id = '$id'";
