@@ -177,7 +177,7 @@ $result1 = mysqli_query($conn, $sql1) or die ("Query failed : " . mysqli_error($
 WHILE ($recUpload = mysqli_fetch_array($result1, MYSQLI_BOTH))
         { ?>
               <tr><td> <?php print("$recUpload[type]") ?> :</td><td>
-                 <?php $link = $uploaddir . $recUpload['link'];
+                 <?php $link = '../uploadfiles/' . $recUpload['link'];
                    print("<a href=". $link . " target=\"_blank\"> $recUpload[link]</a>") ?><br>
               <td> <?php print("$recUpload[upload_date]") ?></td>
 
