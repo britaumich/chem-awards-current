@@ -15,7 +15,7 @@ session_start();
 <?php 
 require_once('nav.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
- 
+$rank = ''; 
 $order = " ORDER BY Name";
 $sqls = "SELECT faculty.`id` as id, `uniqname`, `Name`, faculty.`Rank`, rank.rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty` JOIN rank ON faculty.Rank = rank.id ";
 $sqlsearch = $sqls . $order;
@@ -39,9 +39,6 @@ if (isset($_REQUEST['delete']))  {
 if (isset($_POST['submit'])) {
 
      $rank = check_input($conn,$_REQUEST['Rank']);
-     $due_year = check_input($conn,$_REQUEST['due_year']);
-     $due_month = check_input($conn,$_REQUEST['due_month']);
-     $eligable = check_input($conn,$_REQUEST['eligable']);
 
      $where = ' where 1';
      if ($rank !== 'all' ) { $where .= " and faculty.Rank = '" . $rank . "'"; }

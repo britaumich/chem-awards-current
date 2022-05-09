@@ -16,8 +16,13 @@ session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once('nav.php');
 
-
-$sort = $purifier->purify($_REQUEST['sort']); 
+$type = '';
+$eligable = '';
+if (isset($_REQUEST['sort'])) {
+  $sort = $purifier->purify($_REQUEST['sort']); 
+} else {
+  $sort = '';
+}
 
 $sqls = "SELECT a.`id`, a.`type`, a.`Award_Name`, a.Due_Month, a.`Awarded_By`, a.`Link_to_Website`, a.`Description`, a.`eligibility`, a.who_is_eligible, a.`comments`";
 $from = " FROM `awards_descr` a";
@@ -56,7 +61,9 @@ if (isset($_REQUEST['submit'])) {
      $keyword_search = $purifier->purify($_REQUEST['keyword_search']);
 
     $cluster_check = array();
+   if (isset($_REQUEST['cluster_check'])) {
     $cluster_check = purica_array($conn, $_REQUEST['cluster_check']);
+   }
     if (!empty($cluster_check)) {
         $clusterlist = implode(", ", $cluster_check);
             $from = " FROM (SELECT `id`, `type`, `Award_Name`, Due_Month, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, who_is_eligible, `comments` FROM  `awards_descr` JOIN award_cluster ON awards_descr.id = award_cluster.award_id WHERE award_cluster.cluster_id IN (" . $clusterlist . ") GROUP BY awards_descr.id) a ";
@@ -119,7 +126,11 @@ echo "<br>Month Between: ";
 
 // month
 echo "<br>Award Month: ";
-$month = $purifier->purify($_REQUEST['month']);
+if (isset($_REQUEST['month'])) {
+ $month = $purifier->purify($_REQUEST['month']);
+} else {
+ $month = '';
+}
 if ($month == "" ) { $month = "%";}
     $sqlm ="SELECT DISTINCT due_month FROM `awards_descr` order by month(str_to_date(left(due_month, 3),'%b'))";
       $resm = mysqli_query($conn, $sqlm) or die("There was an error getting min date: ".mysqli_error($conn));
@@ -138,6 +149,9 @@ echo "</select>";
 
 $sql = "SELECT id, name FROM clusters ORDER BY id";
 
+if(!isset($clusterlist)){
+$clusterlist = '';
+}
 $clustersids = array();
        $clustersids = explode(", ", $clusterlist);
 
@@ -174,6 +188,9 @@ if (mysqli_num_rows($result) != 0) {
 */
 //    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search by Keywords (in Award Name and Awarded By)";
     echo "<br><br>Search by Keywords (in Award Name and Awarded By)";
+if(!isset($keyword_search)){
+$keyword_search = "";
+}
     echo '&nbsp;<input type="text" name="keyword_search" size = "40" placeholder="-- keywords, separated by commas --" value="' . $keyword_search . '" >';
     echo "<br>";
     $sql = "SELECT id, name FROM eligibility_list ORDER BY name";

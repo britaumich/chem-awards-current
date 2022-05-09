@@ -72,7 +72,7 @@ else {
 }
   $res = mysqli_stmt_execute($stmt); 
   if ($res) { 
-    if ($id == "") {
+    if ($id == "" || $id == 0) {
        // record was added not updated
       $id = mysqli_insert_id($conn);
    } 
@@ -226,21 +226,43 @@ else {
 ?>
         </form>
 <?php
-}
 	$sql = "SELECT awards_descr.id as id, `type`, `Award_Name`, `due_month`, `due_day`, `Awarded_By`, `Link_to_Website`, `Description`, `eligibility`, `who_is_eligible`, `comments`, eligibility_list.name AS who_is_eligible_name FROM  `awards_descr` JOIN eligibility_list ON who_is_eligible = eligibility_list.id WHERE  awards_descr.id = '$id'";
 //echo $sql;
 	//$result=mysqli_query($conn, $sql) or die("There was an error: ".mysqli_error($conn));
 	$result=mysqli_query($conn, $sql) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 	$adata = mysqli_fetch_array($result, MYSQLI_BOTH);
+ $type = $adata['type'];
+ $Award_Name = $adata['Award_Name'];
+ $due_month = $adata['due_month'];
+ $due_day = $adata['due_day'];
+ $Awarded_By = $adata['Awarded_By'];
+ $Link_to_Website = $adata['Link_to_Website'];
+ $Description = $adata['Description'];
+ $eligibility = $adata['eligibility'];
+ $who_is_eligible = $adata['who_is_eligible'];
+ $comments = $adata['comments'];
+}
+else {
+ $type = '';
+ $Award_Name = '';
+ $due_month = '';
+ $due_day = '';
+ $Awarded_By = '';
+ $Link_to_Website = '';
+ $Description = '';
+ $eligibility = '';
+ $who_is_eligible = '';
+ $comments = '';
+
+}
 ?>	
     <form name="form" method="post" action="edit_award.php">
 <table>
 <tr>
-<th>Id: <td> <?php print($adata['id']) ?>
+<th>Id: <td> <?php print($id) ?>
 <INPUT type ='hidden' name='id' value='<?php echo $id; ?>'>
 <tr><th>Type:<td>choose from the list &nbsp;&nbsp;
 <?php
-$type = $adata['type'];
 $sqlp = "SELECT DISTINCT type FROM awards_descr";
     $resultp = mysqli_query($conn, $sqlp) or die("Query failed :".mysqli_error($conn));
     echo "<select name='type'>";
@@ -276,10 +298,9 @@ if (mysqli_num_rows($resultcluster) != 0) {
      }
 }
 ?> 
-<tr><th>Award Name:<td><input type="text" name="Award_Name" size="90" value="<?php print($adata['Award_Name']) ?>"> 
+<tr><th>Award Name:<td><input type="text" name="Award_Name" size="90" value="<?php print($Award_Name) ?>"> 
 <tr><th>Due Date:<td> 
 <?php
-$due_month = $adata['due_month'];
 ?>
 <select name = 'due_month'>
 <option value=''>--Select Month--</option>
@@ -296,20 +317,19 @@ $due_month = $adata['due_month'];
     <option value='November' <?php if($due_month == 'November') { ?> selected <?php } ?>>November</option>
     <option value='December' <?php if($due_month == 'December') { ?> selected <?php } ?>>December</option>
     </select> 
-<input type="text" name="due_day" value="<?php print($adata['due_day']); ?>"> 
-<tr><th>Awarded By:<td><input type="text" name="Awarded_By" size="90" value="<?php print($adata['Awarded_By']) ?> ">
-<tr><th>Link to Website:<td><input type="text" name="Link_to_Website" size="90" value="<?php print($adata['Link_to_Website']) ?>"> 
-<tr><th>Description:<td><textarea name="Description" cols="90" rows="7"><?php echo $adata['Description'] ?> </textarea>
-<tr><th>Eligibility:<td><textarea name="eligibility" cols="90" rows="7"><?php echo $adata['eligibility'] ?></textarea> 
+<input type="text" name="due_day" value="<?php print($due_day); ?>"> 
+<tr><th>Awarded By:<td><input type="text" name="Awarded_By" size="90" value="<?php print($Awarded_By) ?> ">
+<tr><th>Link to Website:<td><input type="text" name="Link_to_Website" size="90" value="<?php print($Link_to_Website) ?>"> 
+<tr><th>Description:<td><textarea name="Description" cols="90" rows="7"><?php echo $Description ?> </textarea>
+<tr><th>Eligibility:<td><textarea name="eligibility" cols="90" rows="7"><?php echo $eligibility ?></textarea> 
 <tr><th>Who is Eligible:<td> <?php
-$whois = $adata['who_is_eligible'];
 $sqlname = "SELECT id, name FROM eligibility_list ORDER BY name";
 $resultname = mysqli_query($conn, $sqlname) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 if (mysqli_num_rows($resultname) != 0) {
      echo "<select name='who_is_eligible'>";
      while ( $names = mysqli_fetch_array($resultname, MYSQLI_BOTH) ) {
            echo "<option value='$names[id]'";
-           if ($names['id'] == $adata['who_is_eligible']) { echo " selected"; } 
+           if ($names['id'] == $who_is_eligible) { echo " selected"; } 
            echo ">$names[name]</option>";
      }
      echo "</select>";
@@ -342,7 +362,7 @@ if (mysqli_num_rows($resulttag_list) != 0) {
 }
 */
 ?> 
-<tr><th>Comments:<td><textarea name="comments" cols="90" rows="7"><?php echo $adata['comments'] ?> </textarea>
+<tr><th>Comments:<td><textarea name="comments" cols="90" rows="7"><?php echo $comments ?> </textarea>
 </table>
 <?php
      $arr = serialize($search_id_list);
