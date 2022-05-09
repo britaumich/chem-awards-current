@@ -137,8 +137,8 @@ if (mysqli_num_rows($resultrank) != 0) {
 }
 ?> 
 
-<tr><th>Year Promoted:<td><input type="text" name="Appt_Start" value="<?php print($adata['Appt_Start']) ?>" >
-<tr><th>Year PhD:<td><input type="text" name="Year_PhD" value="<?php print($adata['Year_PhD']) ?>" >
+<tr><th>Year Promoted:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($adata['Appt_Start']) ?>" >
+<tr><th>Year PhD:<td><input type="text" name="Year_PhD" maxlength="4" value="<?php print($adata['Year_PhD']) ?>" >
 <!--
 <tr><th>Birth Year:<td><input type="text" name="birth_year" value="<?php print($adata['birth_year']) ?>" >
 -->
