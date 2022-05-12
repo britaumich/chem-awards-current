@@ -36,23 +36,25 @@ if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes
      $Rank = mysqli_insert_id($conn); 
   }
 
-  $Year_PhD = $purifier->purify($_REQUEST['Year_PhD']);
   $birth_year = $purifier->purify($_REQUEST['birth_year']);
   $Appt_Start = $purifier->purify($_REQUEST['Appt_Start']);
+  $Year_Tenured = $purifier->purify($_REQUEST['Year_Tenured']);
+  $Year_Promoted = $purifier->purify($_REQUEST['Year_Promoted']);
 
 if ($id !== "") {
   $sql = "UPDATE faculty SET
       uniqname = '$uniqname',
       Name = '$Name',
       Rank = '$Rank',
-      Year_PhD = '$Year_PhD',
       birth_year = '$birth_year',
-      Appt_Start = '$Appt_Start'
+      Appt_Start = '$Appt_Start',
+      Year_Tenured = '$Year_Tenured',
+      Year_Promoted = '$Year_Promoted'
       WHERE id ='$id'";
 }
 else {
   // add a new record
- $sql = "INSERT INTO `faculty`(`uniqname`, `Name`, `Rank`, `Year_PhD`, `birth_year`, `Appt_Start`) VALUES ('$uniqname', '$Name', '$Rank', '$Year_PhD', '$birth_year', '$Appt_Start')";
+ $sql = "INSERT INTO `faculty`(`uniqname`, `Name`, `Rank`, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted`) VALUES ('$uniqname', '$Name', '$Rank', '$birth_year', '$Appt_Start', '$Year_Tenured', '$Year_Promoted')";
 }
 //echo $sql;
 
@@ -177,16 +179,17 @@ if ($id == '') {
   $birth_year = '';
   $Appt_Start = '';
 } else {
-  $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
+  $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
 //echo $sql;
 	$result=mysqli_query($conn, $sql) or header('Location: ERROR.php?error="Unable to select applicant\'s information for editing."');
 	$adata = mysqli_fetch_array($result, MYSQLI_BOTH);
   $uniqname = $adata['uniqname'];
   $Name = $adata['Name'];
   $rank = $adata['rank'];
-  $Year_PhD = $adata['Year_PhD'];
   $birth_year = $adata['birth_year'];
   $Appt_Start = $adata['Appt_Start'];
+  $Year_Tenured = $adata['Year_Tenured'];
+  $Year_Promoted = $adata['Year_Promoted'];
 }
 ?>	
     <form name="form" method="post" action="edit_faculty.php">
@@ -194,7 +197,7 @@ if ($id == '') {
 <tr>
 <th>id: <td> <?php print($id) ?>
 <INPUT type ='hidden' name='id' value='<?php echo $id; ?>'>
-<tr><th>Uniqname:<td><input type="text" name="uniqname" value="<?php print($uniqname) ?>">
+<tr><th>Unique Name:<td><input type="text" name="uniqname" value="<?php print($uniqname) ?>">
 <tr><th>Name:<td><input type="text" name="Name" value="<?php print($Name) ?>">
 <tr><th>Rank:<td>choose from the list &nbsp;&nbsp; 
 <?php
@@ -212,10 +215,11 @@ if (mysqli_num_rows($resultrank) != 0) {
 ?> 
 &nbsp;&nbsp;or&nbsp;&nbsp;<input type="text" name="rank1" placeholder="-- enter new rank --" value="" >
 
-<tr><th>Year_PhD:<td><input type="text" name="Year_PhD" maxlength="4" value="<?php print($Year_PhD) ?>">
 <tr><th>Birth Year:<td><input type="text" name="birth_year" maxlength="4" value="<?php print($birth_year) ?>">
-<tr><th>Appt_Start:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($Appt_Start) ?>">
-<tr><th>cluster:<td>
+<tr><th>Appt Start:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($Appt_Start) ?>">
+<tr><th>Year Tenured:<td><input type="text" name="Year_Tenured" maxlength="4" value="<?php print($Year_Tenured) ?>">
+<tr><th>Year Promoted:<td><input type="text" name="Year_Promoted" maxlength="4" value="<?php print($Year_Promoted) ?>">
+<tr><th>Clusters:<td>
 <?php
 $sqlclusterids = "SELECT clusters.id FROM clusters INNER JOIN faculty_cluster ON clusters.id = faculty_cluster.cluster_id WHERE faculty_id = '$id'";
 $resultcluster_list = mysqli_query($conn, $sqlclusterids) or header('Location: ERROR.php?error="Unable to select clusters."');

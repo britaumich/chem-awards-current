@@ -18,7 +18,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
  
 $rank = 'all';
 $order = " ORDER BY Name";
-$sqls = "SELECT faculty.`id` as id, `uniqname`, `Name`, faculty.`Rank`, rank.rank, `Year_PhD`, `birth_year`, `Appt_Start`, `Num_papers`, `Num_UG_courses_taught`, `Num_of_times`, `Q1_avg`, `Q2_avg`, `teaching_summary` FROM `faculty` JOIN rank ON faculty.Rank = rank.id ";
+$sqls = "SELECT faculty.`id` as id, `uniqname`, `Name`, faculty.`Rank`, rank.rank, `Appt_Start`, `Year_Tenured`, `Year_Promoted` FROM `faculty` JOIN rank ON faculty.Rank = rank.id ";
 $sqlsearch = $sqls . $order;
 
 if (isset($_POST['submit'])) {
@@ -75,14 +75,14 @@ echo "</div><Br><Br>";
 
  //show table headers for results
  
-echo ("<table>
+echo ("<table style='width:100%'>
 <tr>
-	<th><a href=\"allfaculty.php?&sort=uniqname\"></a>Click to see</th>
-	<th width='1000px'>Name<br> (click to edit)</th>
+	<th></a>Unique Name<br>(Click to view)</th>
+	<th>Name<br> (click to edit)</th>
 	<th>Rank</a></th>
-	<th>Year Promoted</th>
-<!--	<th>Birth Year</th>   -->
 	<th>Appt Start</th>
+	<th>Year Tenured</th>
+	<th>Year Promoted</th>
 
 </tr>
 ");
@@ -96,11 +96,11 @@ while ( $adata = mysqli_fetch_array($result, MYSQLI_BOTH) )
 		
 //		echo "<td>$adata[id]</td>";
 		echo"<td><a href='faculty.php?id=$adata[id]'>$adata[uniqname]</a></td>";
-		echo"<td><a href='edit_faculty.php?id=$adata[id]'>$adata[Name]</a></td>";
-		echo "<td>$adata[rank]</td>";
-		echo "<td>$adata[Year_PhD]</td>";
-//		echo "<td>$adata[birth_year]</td>";
+		echo"<td style='white-space:nowrap'><a href='edit_faculty.php?id=$adata[id]'>$adata[Name]</a></td>";
+		echo "<td style='white-space:nowrap'>$adata[rank]</td>";
 		echo "<td>$adata[Appt_Start]</td>";
+		echo "<td>$adata[Year_Tenured]</td>";
+		echo "<td>$adata[Year_Promoted]</td>";
 }
 ?>
 

@@ -35,22 +35,25 @@ if (isset($_REQUEST['edit_record']) && $_REQUEST['edit_record'] == "Save changes
   $Name = $purifier->purify($_REQUEST['Name']);
   $Rank = $purifier->purify($_REQUEST['Rank']);
 
-  $Year_PhD = $purifier->purify($_REQUEST['Year_PhD']);
-  //$birth_year = $purifier->purify($_REQUEST['birth_year']);
+  $birth_year = $purifier->purify($_REQUEST['birth_year']);
   $Appt_Start = $purifier->purify($_REQUEST['Appt_Start']);
+  $Year_Tenured = $purifier->purify($_REQUEST['Year_Tenured']);
+  $Year_Promoted = $purifier->purify($_REQUEST['Year_Promoted']);
 
 if ($id !== "") {
   $sql = "UPDATE faculty SET
       uniqname = '$uniqname',
       Name = '$Name',
       Rank = '$Rank',
-      Year_PhD = '$Year_PhD',
-      Appt_Start = '$Appt_Start'
+      birth_year = '$birth_year',
+      Appt_Start = '$Appt_Start',
+      Year_Tenured = '$Year_Tenured',
+      Year_Promoted = '$Year_Promoted'
       WHERE id ='$id'";
 }
 else {
   // add a new record
- $sql = "INSERT INTO `faculty`(`uniqname`, `Name`, `Rank`, `Year_PhD`, `birth_year`, `Appt_Start`) VALUES ('$uniqname', '$Name', '$Rank', '$Year_PhD', '$birth_year', '$Appt_Start')";
+ $sql = "INSERT INTO `faculty`(`uniqname`, `Name`, `Rank`, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted`) VALUES ('$uniqname', '$Name', '$Rank', '$birth_year', '$Appt_Start', '$Year_Tenured', '$Year_Promoted')";
 }
   if (mysqli_query($conn, $sql)) { 
      if ($id == "") {
@@ -107,13 +110,17 @@ $uniqname = $_SESSION['current_user'];
 
 	//Everything is peachy, pull record.
 
-$sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
+$sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
 //echo $sql;
 	$result=mysqli_query($conn, $sql) or die("There was an error: ".mysqli_error($conn));
 
 
 	$adata = mysqli_fetch_array($result, MYSQLI_BOTH);
         $id = $adata['id'];
+  $birth_year = $adata['birth_year'];
+  $Appt_Start = $adata['Appt_Start'];
+  $Year_Tenured = $adata['Year_Tenured'];
+  $Year_Promoted = $adata['Year_Promoted'];
 ?>	
     <form name="form" method="post" action="faculty.php">
 	<div align="center"><img src="../images/linecalendarpopup500.jpg"></div><br>
@@ -137,12 +144,11 @@ if (mysqli_num_rows($resultrank) != 0) {
 }
 ?> 
 
-<tr><th>Year Promoted:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($adata['Appt_Start']) ?>" >
-<tr><th>Year PhD:<td><input type="text" name="Year_PhD" maxlength="4" value="<?php print($adata['Year_PhD']) ?>" >
-<!--
-<tr><th>Birth Year:<td><input type="text" name="birth_year" value="<?php print($adata['birth_year']) ?>" >
--->
-<tr><th>cluster:<td>
+<tr><th>Birth Year:<td><input type="text" name="birth_year" maxlength="4" value="<?php print($birth_year) ?>">
+<tr><th>Appt Start:<td><input type="text" name="Appt_Start" maxlength="4" value="<?php print($Appt_Start) ?>">
+<tr><th>Year Tenured:<td><input type="text" name="Year_Tenured" maxlength="4" value="<?php print($Year_Tenured) ?>">
+<tr><th>Year Promoted:<td><input type="text" name="Year_Promoted" maxlength="4" value="<?php print($Year_Promoted) ?>">
+<tr><th>Clusters:<td>
 <?php
 $sqlclusterids = "SELECT clusters.id FROM clusters INNER JOIN faculty_cluster ON clusters.id = faculty_cluster.cluster_id WHERE faculty_id = '$id'";
 $resultcluster_list = mysqli_query($conn, $sqlclusterids) or header('Location: ERROR.php?error="Unable to select clusters."');

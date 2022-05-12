@@ -25,11 +25,11 @@ if (isset($_REQUEST['id'])) {
 }
 if ($id == "") {
      $uniqname = $purifier->purify($_REQUEST['uniqname']);
-     $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`  FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
+     $sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.uniqname = '$uniqname'";
 }
 else {
 #show Faculty  record
-	$sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `Year_PhD`, `birth_year`, `Appt_Start`  FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
+	$sql = "SELECT faculty.`id`, `uniqname`, `Name`, faculty.`Rank`, rank.rank as rank, `birth_year`, `Appt_Start`, `Year_Tenured`, `Year_Promoted` FROM `faculty`, rank  WHERE rank.id = faculty.Rank AND faculty.id = '$id'";
 }
 //echo $sql;
 $result=mysqli_query($conn, $sql) or die("There was an error: ".mysqli_error($conn));
@@ -96,23 +96,25 @@ else {
 $uniqname = $adata['uniqname'];
 ?>	
 
-<table>
+<table style='width:100%'>
 <tr>
-        <th>uniqname<br> (click to edit)</th>
+        <th>Unique Name<br> (click to edit)</th>
         <th>Name</a></th>
         <th>Rank</a></th>
-        <th>Year Phd</th>
         <th>Birth Year</th>
         <th>Appt Start</th>
+        <th>Year Tenured</th>
+        <th>Year Promoted</th>
         <th>Clusters</th>
 
 <tr>
 <td><a href='edit_faculty.php?id=<?php echo $adata['id']; ?>'><?php echo $uniqname; ?></a></td>  
-<td> <?php print($adata['Name']) ?> 
+<td style='white-space:nowrap'> <?php print($adata['Name']) ?>
 <td> <?php print($adata['rank']) ?> 
-<td> <?php print($adata['Year_PhD']) ?> 
 <td> <?php print($adata['birth_year']) ?> 
 <td> <?php print($adata['Appt_Start']) ?> 
+<td> <?php print($adata['Year_Tenured']) ?>
+<td> <?php print($adata['Year_Promoted']) ?>
 <td>
 <?php
 $sqlcluster = "SELECT clusters.name FROM clusters INNER JOIN faculty_cluster ON clusters.id = faculty_cluster.cluster_id WHERE faculty_id = '$id'";
