@@ -39,7 +39,7 @@ function check_access($valid_users, $valid_groups, $user, $other_admins = array(
 }
 
 function admin_access () {
- if (isset($_SESSION['login']) && $_SESSION['login']) {
+ if (isset($_SESSION['login']) && $_SESSION['login'] && isset($_SESSION['user_membership'])) {
    $current_user = $_SESSION['current_user'];
    global $valid_users;
    global $valid_groups;
