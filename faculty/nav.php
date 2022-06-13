@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('../library/HTMLPurifier.auto.php');
-require_once('../access.php');
+require_once('access.php');
 $purifier = new HTMLPurifier();
 if (non_admin_access()) {
 ?>

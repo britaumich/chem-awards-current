@@ -3,7 +3,7 @@ session_start();
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_dbConnect.inc');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/basicLib.php');
 
-require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_access_list.inc');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/awards_admin_access_list.inc');
 
 function is_admin($uniqname, $other_admins)
 {

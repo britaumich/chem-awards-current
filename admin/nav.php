@@ -1,5 +1,5 @@
 <?php
-require_once('../access.php');
+require_once('access.php');
 require_once('../library/HTMLPurifier.auto.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/../support/basicLib.php');
 
